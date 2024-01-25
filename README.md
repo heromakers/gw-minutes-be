@@ -6,4 +6,5 @@ Resources for Spring-Boot
 
 ## Specification ##
 * MyBatis
-* thymeleaf
+* GraphQL
+* Templates
