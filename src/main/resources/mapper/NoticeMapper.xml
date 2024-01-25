@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.NoticeMapper">
+    <resultMap id="NoticeMap" type="NoticeModel">
+        <result property="noticeId" column="notice_id" />
+        <result property="noticeKind" column="notice_kind" />
+        <result property="noticeKindTitle" column="noticeKindTitle" />
+        <result property="writer" column="writer" />
+        <result property="writerId" column="writer_id" />
+        <result property="title" column="title" />
+        <result property="contents" column="contents" />
+        <result property="mainImage.fileUrl" column="file_url" />
+        <result property="readCount" column="read_count" />
+        <result property="useFlag" column="use_fg" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="useFlag != null and useFlag != ''">
+            AND ntc.use_fg = #{useFlag}
+        </if>
+        <if test="noticeKind != null and noticeKind != ''">
+            AND ntc.notice_kind = #{noticeKind}
+        </if>
+        <if test="title != null and title != ''">
+            AND ntc.title LIKE concat('%', #{title}, '%')
+        </if>
+        <if test="schTxt != null and schTxt != ''">
+            AND (
+            ( ntc.title    LIKE concat('%', #{schTxt}, '%') ) OR
+            ( ntc.writer   LIKE concat('%', #{schTxt}, '%') ) OR
+            ( ntc.contents LIKE concat('%', #{schTxt}, '%') )
+            )
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="NoticeMap">
+        SELECT ntc.*
+            ,cod.code_label AS noticeKindTitle
+            ,fle.file_url
+        FROM tb_notice ntc
+        LEFT JOIN tb_code cod ON cod.p_code = 'NOTICE_KIND' and cod.code = ntc.notice_kind
+        LEFT JOIN tb_file fle ON fle.link_info = 'noticeMainImage' and fle.link_key = ntc.notice_id
+        <include refid="whereParams"/>
+        ORDER BY ntc.notice_id DESC
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_notice ntc
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="NoticeMap">
+        SELECT ntc.*
+        ,cod.code_label AS  noticeKindTitle
+        ,fle.file_url
+        FROM tb_notice ntc
+        LEFT JOIN tb_code cod ON cod.p_code = 'NOTICE_KIND' and cod.code = ntc.notice_kind
+        LEFT JOIN tb_file fle ON fle.link_info = 'noticeMainImage' and fle.link_key = ntc.notice_id
+        WHERE notice_id = #{noticeId}
+    </select>
+
+    <insert id="insert" parameterType="NoticeModel" useGeneratedKeys="true" keyProperty="noticeId">
+        INSERT INTO tb_notice (
+        notice_kind
+        ,writer_id
+        ,writer
+        ,title
+        ,contents
+        ,read_count
+        ,use_fg
+        ,created_at
+        ,updated_at
+        ) VALUES (
+        #{noticeKind}
+        ,#{writerId}
+        ,#{writer}
+        ,#{title}
+        ,#{contents}
+        ,0
+        ,1
+        ,now()
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="noticeId">
+            SELECT LAST_INSERT_ID() as noticeId
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="NoticeModel">
+        UPDATE tb_notice SET
+        updated_at = now()
+        <if test="noticeKind != null and noticeKind != ''">
+            ,notice_kind = #{noticeKind}
+        </if>
+        <if test="writer != null and writer != ''">
+            ,writer = #{writer}
+        </if>
+        <if test="writerId != null and writerId != ''">
+            ,writer_id = #{writerId}
+        </if>
+        <if test="title != null and title != ''">
+            ,title = #{title}
+        </if>
+        <if test="contents != null and contents != ''">
+            ,contents = #{contents}
+        </if>
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <update id="increaseReadCount" parameterType="int">
+        UPDATE tb_notice SET
+        read_count = IFNULL(read_count, 0) + 1
+        WHERE notice_id = #{noticeId}
+    </update>
+
+    <update id="deleteFlag" parameterType="int">
+        UPDATE tb_notice SET use_fg = 0
+        WHERE notice_id = #{noticeId}
+    </update>
+</mapper>

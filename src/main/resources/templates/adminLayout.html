@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" th:href="@{/dist/img/favicon.png}" type="image/x-icon">
+    <script th:src="@{/plugins/jQuery/jquery-1.12.4.min.js}"></script>
+    <script th:src="@{/plugins/jquery-ui-1.12.1/jquery-ui.min.js}"></script>
+    <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script>
+        WebFont.load({
+            google: {families: ['Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i']},
+            active: function () {
+                localStorage.fonts = true;
+            }
+        });
+    </script>
+    <link th:href="@{/dist/css/base.css}" rel="stylesheet" type="text/css">
+<th:block layout:fragment="headBlock"></th:block>
+    <!-- START THEME LAYOUT STYLE -->
+    <link th:href="@{/dist/css/style.css}" rel="stylesheet" type="text/css">
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="hold-transition fixed sidebar-mini">
+    <!-- Preloader -->
+    <div class="preloader"></div>
+
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="/item" class="logo"> <!-- Logo -->
+                <span class="logo-mini">
+                    <!--<b>A</b>H-admin-->
+                    <img th:src="@{/dist/img/logo-mini.png}" alt="logo" style="max-height:72px">
+                </span>
+                <span class="logo-lg">
+                    <!--<b>Admin</b>H-admin-->
+<!--                    <img th:src="@{/dist/img/logo.png}" alt="logo" style="max-height:72px">-->
+                </span>
+            </a>
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle hidden-sm hidden-md hidden-lg" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="ti-menu-alt"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown dropdown-user">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"> <i class="ti-user"></i></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#"><i class="ti-user"></i> User Profile</a></li>
+                                <li><a href="#"><i class="ti-settings"></i> Settings</a></li>
+                                <li><a href="#" onclick="evLogout()"><i class="ti-key"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <aside class="main-sidebar">
+                <!-- sidebar -->
+                <div class="sidebar">
+                    <!-- sidebar menu -->
+                    <ul class="sidebar-menu">
+                        <li><a href="/admin/account"><i class="fa fa-id-card"></i>계정 관리</a></li>
+                        <li><a href="/admin/code"><i class="fa fa-cog"></i>코드 관리</a></li>
+                        <li><a href="/admin/notice"><i class="fa fa-bullhorn"></i>게시판 관리</a></li>
+                        <li><a href="/admin/popup"><i class="fa fa-bell"></i>알림팝업 관리</a></li>
+                        <li><a href="/admin/talk"><i class="fa fa-file-text"></i>사용자 작성글 관리</a></li>
+                        <li><a href="/admin/comment"><i class="fa fa-comment"></i>댓글 관리</a></li>
+                    </ul>
+                </div>
+                <!-- /.sidebar -->
+            </aside>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="content">
+
+<th:block layout:fragment="mainContent"></th:block>
+
+            </div> <!-- /.main content -->
+        </div>
+
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">Frenz4U</div>
+            <strong>Copyright &copy; Frenz4U 2023</strong> All rights reserved. <i class="fa fa-heart color-green"></i>
+        </footer>
+    </div>
+
+    <script th:src="@{/plugins/slimScroll/jquery.slimscroll.min.js}"></script>
+    <script th:src="@{/plugins/metisMenu/metisMenu.min.js}"></script>
+    <script th:src="@{/plugins/lobipanel/lobipanel.min.js}"></script>
+
+    <script>
+    const evLogout = () => {
+        jQuery.ajax({
+            url: "/api/logout",
+            method: "DELETE",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("로그아웃 되었습니다.");
+					localStorage.clear();
+                    location.href = '/admin/login';
+				} else {
+					alert(response.message);
+				}
+			}
+        });
+    }
+
+    jQuery(document).ready(function() {
+        // let token = "[[${session.authToken}]]";
+        let token = localStorage.getItem("frenz-authToken");
+        if(token) {
+            $.ajaxSetup({ headers: { "X-AUTH-TOKEN": token } });
+        } else {
+            location.href = "/admin/login";
+        }
+    });
+    </script>
+<th:block layout:fragment="endBlock"></th:block>
+</body>
+</html>

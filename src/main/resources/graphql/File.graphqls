@@ -1,0 +1,29 @@
+type FileModel {
+    fileId : ID!
+    linkInfo : String!
+    linkKey : Int
+    realName : String
+    fileUrl : String
+    fileSize : Int
+    savedAt : String
+}
+
+input FileParam {
+    fileId : Int
+    linkInfo : String!
+    linkKey : Int
+    realName : String
+    fileUrl : String
+    fileSize : Int
+    base64String : String
+}
+
+extend type Query {
+    fileList(fileParam: FileParam) : [FileModel]
+    fileById(fileId : Int!) : FileModel
+}
+
+extend type Mutation {
+    uploadFile(fileParam: FileParam!): Result
+    deleteFile(fileId: Int!): Result
+}

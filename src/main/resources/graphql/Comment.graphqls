@@ -1,0 +1,29 @@
+type CommentModel {
+    commentId : ID!
+    parentId : Int
+    precedingId : Int
+    writerId : Int
+    writerModel : Account
+    contents : String
+    useFlag : Boolean
+    createdAt : String
+    updatedAt : String
+}
+
+input CommentParam {
+    parentId : Int
+    precedingId : Int
+    writerId : Int
+    contents : String
+}
+
+extend type Query {
+    commentList(schTxt: String, useFlag: Boolean, commentParam: CommentParam) : [CommentModel]
+    commentById(commentId : Int!) : CommentModel
+}
+
+extend type Mutation {
+    insertComment(commentParam: CommentParam!): Result
+    updateComment(commentId: Int!, commentParam: CommentParam!): Result
+    deleteComment(commentId: Int!): Result
+}

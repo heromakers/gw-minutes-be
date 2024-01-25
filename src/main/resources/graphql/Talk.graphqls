@@ -1,0 +1,33 @@
+type TalkModel {
+    talkId : ID!
+    title : String!
+    talkKind : String
+    talkKindTitle : String
+    writerId : Int
+    writerModel : AccountModel
+    contents : String
+    readCount : Int
+    mainImage : FileModel
+    useFlag : Boolean
+    createdAt : String
+    updatedAt : String
+}
+
+input TalkParam {
+    title : String
+    talkKind : String
+    writerId : Int
+    contents : String
+    mainImage : FileParam
+}
+
+extend type Query {
+    talkList(schTxt: String, useFlag: Boolean, talkParam: TalkParam) : [TalkModel]
+    talkById(talkId : Int!) : TalkModel
+}
+
+extend type Mutation {
+    insertTalk(talkParam: TalkParam!): Result
+    updateTalk(talkId: Int!, talkParam: TalkParam!): Result
+    deleteTalk(talkId: Int!): Result
+}

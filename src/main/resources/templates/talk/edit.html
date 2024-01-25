@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{adminLayout}">
+
+<th:block layout:fragment="headBlock">
+	<title>[[${menuTitle}]]</title>
+	<link th:href="@{/plugins/summernote/summernote.css}" rel="stylesheet" type="text/css"/>
+</th:block>
+
+<th:block layout:fragment="mainContent">
+	<div class="content-header">
+		<div class="header-title">
+			<ol class="breadcrumb">
+				<li><a href="/"><i class="pe-7s-home"></i> Home</a></li>
+				<li class="active">[[${menuTitle}]]</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-bd lobidrag">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h4>[[${menuTitle}]]</h4>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form id="talkForm" name="talkForm" action="#" class="mt-4">
+						<div class="form-group row">
+							<label for="talkKind" class="col-md-2 form-control-label">작성글 종류</label>
+							<div class="col-md-4">
+								<select id="talkKind" name="talkKind" class="form-control">
+									<option th:each="kind : ${talkKinds}" th:value="${kind?.code}"
+											th:utext="${kind?.codeLabel}">
+									</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="writerId" class="col-md-2 form-control-label">작성자 key</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="writerId" name="writerId" th:value="${talkModel.writerId}" />
+							</div>
+							<label for="writerName" class="col-md-2 form-control-label">작성자</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="writerName" name="writerName" th:value="${talkModel.writerModel.humanName}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="title" class="col-md-2 form-control-label">제목</label>
+							<div class="col-md-10">
+								<input class="form-control" type="text" id="title" name="title" th:value="${talkModel.title}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="mainImageFile" class="col-md-2 form-control-label">메인 이미지</label>
+							<div class="col-md-10">
+								<input class="form-control" type="file" id="mainImageFile" name="mainImageFile" onchange="loadImage(this)" />
+								<div id="mainImageArea" class="mainImageDiv" style="padding: 8px;">
+									<th:block th:if="${!#strings.isEmpty(talkModel.mainImage.fileUrl)}">
+										<img th:id="${talkModel.mainImage.fileId}" th:src="${talkModel.mainImage.fileUrl}" style="max-width:100%" />
+										<button class="btn btn-warning btn-sm" type="button" onclick="removeImage(this)" >X</button>
+									</th:block>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<div class="col-md-12">
+								<textarea id="contents" name="contents" class="form-control" th:utext="${talkModel.contents}"></textarea>
+							</div>
+						</div>
+
+						<div class="m-t-20 text-center">
+							<button class="btn btn-success" type="button" onclick="evList()">목록</button>
+							<button class="btn btn-primary" type="button" onclick="evSave()">저장</button>
+							<th:block th:if="${pageType == 'update'}">
+								<button class="btn btn-warning" type="button" onclick="evDelete()">삭제</button>
+							</th:block>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+
+<th:block layout:fragment="endBlock">
+	<script th:src="@{/plugins/summernote/summernote.min.js}"></script>
+	<script th:src="@{/dist/js/theme.js}"></script>
+
+	<script>
+	var pageType = "[[${pageType}]]";
+	var talkId = "[[${talkId}]]";
+	var talkKind = "[[${talkModel.talkKind}]]";
+
+	jQuery(document).ready(function() {
+		if(pageType == "update") {
+			if(talkKind) $("#talkKind").val(talkKind);
+		}
+		jQuery('#contents').summernote({
+			height: 400,
+			minHeight: null,
+			maxHeight: null,
+			focus: false,  // after initializing summernote
+			lang: "ko-KR",
+			callbacks : {
+				onImageUpload : function(files, editor, webEditable) {
+					for (let i = files.length - 1; i >= 0; i--) {
+						uploadSummernoteImageFile(files[i], this);
+					}
+				}
+			}
+		});
+	});
+
+	const renderTalk = () => {
+		jQuery.ajax({
+			url: "/api/talk/"+talkId,
+			success: function(response) {
+				if(response && response.status == "success") {
+					let talkModel = response.data;
+					$("#talkKind").val(talkModel.talkKind);
+					$("#title").val(talkModel.title);
+					$("#writerId").val(talkModel.writerId);
+					$("#writerName").val(talkModel.writerModel.humanName);
+					$("#contents").val(talkModel.contents);
+				}
+			}
+		});
+	}
+
+	const evList = () => {
+		location.href = "/admin/talk";
+	}
+
+	const evSave = () => {
+		let saveUrl = "/api/talk";
+		let saveMethod = "POST";
+		let talkModel = {};
+
+		if(pageType == "update") {
+			saveMethod = "PUT";
+			talkModel.talkId = talkId;
+		}
+
+		talkModel.talkKind = $("#talkKind").val();
+		talkModel.title = $("#title").val();
+		talkModel.writerId = $("#writerId").val();
+		talkModel.contents = $("#contents").val();
+
+		let mainImageElement = jQuery("#mainImageArea img");
+		if(mainImageElement) {
+			let fileId = mainImageElement.attr("id");
+			let fileName = mainImageElement.attr("name");
+			if(fileId) {
+				talkModel.mainImage = { fileId: fileId };
+			} else if(fileName) {
+				let imgSrc = mainImageElement.attr("src");
+				talkModel.mainImage = { realName: fileName, base64String : imgSrc.split(",")[1] };
+			}
+		}
+
+		jQuery.ajax({
+			url: saveUrl,
+			method: saveMethod,
+			data: JSON.stringify( talkModel ),
+			dataType: "json",
+			contentType: "application/json;charset=UTF-8",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("저장되었습니다.");
+					if(pageType == "update") {
+						location.href = "/admin/talk/"+talkId;
+					} else {
+						location.href = "/admin/talk";
+					}
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const evDelete = () => {
+		jQuery.ajax({
+			url: "/api/talk/"+talkId,
+			method: "DELETE",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("삭제되었습니다.");
+					location.href = "/admin/talk";
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const uploadSummernoteImageFile = (file, element) => {
+		let reader = new FileReader();
+
+		reader.onload = function() {
+			let readResult = reader.result;
+
+			let fileModel = {};
+			fileModel.base64String = readResult.split(",")[1];
+			fileModel.realName = file.name;
+			fileModel.linkKind = "editorFile";
+			if(!talkId) talkId = "0";
+			fileModel.linkKey = talkId;
+
+			jQuery.ajax({
+				type : "POST",
+				url : "/api/file",
+				data: JSON.stringify( fileModel ),
+				dataType: "json",
+				contentType: "application/json",
+				success: function(response) {
+					console.log(response);
+					if(response.status == "success"){
+						jQuery(element).summernote('editor.insertImage', response.data.fileUrl);
+					} else {
+						alert(response.message);
+					}
+				},
+				error:function(request,status,err){
+					console.log(err);
+				}
+			});
+		}
+
+		reader.onerror = function (error) {
+			console.log("Error : " + error);
+		};
+
+		reader.readAsDataURL(file);
+	}
+
+	const loadImage = (element) => {
+		let file = element.files[0];
+		let reader = new FileReader();
+
+		reader.onload = function(){
+			jQuery(element).next().html("<img name='"+ file.name +"' src='"+ reader.result +"' style='max-width:100%' /> <button class='btn btn-warning btn-sm' type='button' onclick='removeImage(this)' >X</button>");
+			jQuery(element).next().show();
+		}
+		reader.onerror = function (error) {
+			console.log('Error');
+		};
+
+		reader.readAsDataURL(file);
+	}
+
+	const removeImage = (element) => {
+		jQuery(element).parent().prev().val("");
+		jQuery(element).parent().html("");
+	}
+	</script>
+</th:block>
+
+</html>

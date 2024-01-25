@@ -1,0 +1,31 @@
+type CodeModel {
+    codeId : ID!
+    parentCode : String!
+    code : String!
+    codeLabel : String!
+    memo : String
+    stringValue : String
+    numberValue : Float
+    useFlag : Boolean
+    editedAt : String
+}
+
+input CodeParam {
+    parentCode : String
+    code : String
+    codeLabel : String
+    memo : String
+    stringValue : String
+    numberValue : Float
+}
+
+extend type Query {
+    codeList(schTxt: String, useFlag: Boolean, codeParam: CodeParam) : [CodeModel]
+    codeById(codeId : Int!) : CodeModel
+}
+
+extend type Mutation {
+    insertCode(codeParam: CodeParam!): Result
+    updateCode(codeId: Int!, codeParam: CodeParam!): Result
+    deleteCode(codeId: Int!): Result
+}

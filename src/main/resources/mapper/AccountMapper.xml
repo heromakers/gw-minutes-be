@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.AccountMapper">
+    <resultMap id="AccountMap" type="AccountModel">
+        <result property="accountId" column="account_id" />
+        <result property="joinType" column="join_type" />
+        <result property="accountKey" column="account_key" />
+        <result property="humanName" column="human_name" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="profileImage.fileUrl" column="file_url" />
+        <result property="roles" column="roles" />
+        <result property="useFlag" column="use_fg" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="loginAt" column="login_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="useFlag != null and useFlag != ''">
+            AND acnt.use_fg = #{useFlag}
+        </if>
+        <if test="joinType != null and joinType != ''">
+            AND acnt.join_type = #{joinType}
+        </if>
+        <if test="humanName != null and humanName != ''">
+            AND acnt.human_name LIKE concat('%', #{humanName}, '%')
+        </if>
+        <if test="schTxt != null and schTxt != ''">
+            AND (
+            ( acnt.human_name  LIKE concat('%', #{schTxt}, '%') ) OR
+            ( acnt.account_key LIKE concat('%', #{schTxt}, '%') ) OR
+            ( acnt.phone       LIKE concat('%', #{schTxt}, '%') )
+            )
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="AccountMap">
+        SELECT acnt.*
+        ,usf.file_url
+        FROM tb_account acnt
+        LEFT JOIN tb_file usf ON usf.link_info = 'accountProfileImage' AND usf.link_key = acnt.account_id
+        <include refid="whereParams"/>
+        ORDER BY acnt.human_name, acnt.account_id DESC
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_account acnt
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="AccountMap">
+        SELECT acnt.*
+        ,usf.file_url
+        FROM tb_account acnt
+        LEFT JOIN tb_file usf ON usf.link_info = 'accountProfileImage' AND usf.link_key = acnt.account_id
+        WHERE acnt.account_id = #{accountId}
+    </select>
+
+    <select id="selectByKeys" parameterType="AccountModel" resultMap="AccountMap">
+        SELECT acnt.*
+        FROM tb_account acnt
+        WHERE acnt.use_fg = 1
+        AND (
+        1 = 0
+        <if test="accountKey != null and accountKey != ''">
+            OR acnt.account_key = #{accountKey}
+        </if>
+        <if test="phone != null and phone != ''">
+            OR acnt.phone = #{phone}
+        </if>
+        <if test="email != null and email != ''">
+            OR acnt.email = #{email}
+        </if>
+        <if test="roles != null and roles != ''">
+            OR acnt.roles = #{roles}
+        </if>
+        )
+    </select>
+
+    <select id="selectByAccountKey" parameterType="string" resultMap="AccountMap">
+        SELECT acnt.*
+        ,usf.file_url
+        FROM tb_account acnt
+        LEFT JOIN tb_file usf ON usf.link_info = 'accountProfileImage' AND usf.link_key = acnt.account_id
+        WHERE acnt.account_key = #{accountKey}
+        AND acnt.use_fg = 1
+        LIMIT 1
+    </select>
+
+    <select id="selectByPhone" parameterType="string" resultMap="AccountMap">
+        SELECT acnt.*
+        ,usf.file_url
+        FROM tb_account acnt
+        LEFT JOIN tb_file usf ON usf.link_info = 'accountProfileImage' AND usf.link_key = acnt.account_id
+        WHERE acnt.phone = #{phone}
+        AND acnt.use_fg = 1
+        LIMIT 1
+    </select>
+
+    <select id="selectByEmail" parameterType="string" resultMap="AccountMap">
+        SELECT acnt.*
+        FROM tb_account acnt
+        WHERE acnt.email = #{email}
+        AND acnt.use_fg = 1
+        LIMIT 1
+    </select>
+
+    <insert id="insert" parameterType="AccountModel" useGeneratedKeys="true" keyProperty="accountId">
+        INSERT INTO tb_account (
+        account_key
+        ,password
+        ,join_type
+        ,human_name
+        ,phone
+        ,email
+        ,postcode
+        ,address
+        ,address_detail
+        ,roles
+        ,fcm_token
+        ,refresh_token
+        ,use_fg
+        ,created_at
+        ,updated_at
+        ,password_at
+        ) VALUES (
+        #{accountKey}
+        ,#{password}
+        ,#{joinType}
+        ,#{humanName}
+        ,#{phone}
+        ,#{email}
+        ,#{postcode}
+        ,#{address}
+        ,#{addressDetail}
+        ,#{roles}
+        ,#{fcmToken}
+        ,#{refreshToken}
+        ,1
+        ,now()
+        ,now()
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="accountId">
+            SELECT LAST_INSERT_ID() as accountId
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="AccountModel">
+        UPDATE tb_account SET
+        updated_at = now()
+        <if test="password != null and password != ''">
+            ,password = #{password}
+        </if>
+        <if test="joinType != null and joinType != ''">
+            ,join_type = #{joinType}
+        </if>
+        <if test="humanName != null and humanName != ''">
+            ,human_name = #{humanName}
+        </if>
+        <if test="phone != null and phone != ''">
+            ,phone = #{phone}
+        </if>
+        <if test="email != null and email != ''">
+            ,email = #{email}
+        </if>
+        <if test="postcode != null and postcode != ''">
+            ,postcode = #{postcode}
+        </if>
+        <if test="address != null and address != ''">
+            ,address = #{address}
+        </if>
+        <if test="addressDetail != null and addressDetail != ''">
+            ,address_detail = #{addressDetail}
+        </if>
+        <if test="roles != null and roles != ''">
+            ,roles = #{roles}
+        </if>
+        <if test="fcmToken != null and fcmToken != ''">
+            ,fcm_token = #{fcmToken}
+        </if>
+        <if test="refreshToken != null and refreshToken != ''">
+            ,refresh_token = #{refreshToken}
+        </if>
+        <if test="signStatus == 'Success'">
+            ,login_at = now()
+        </if>
+        WHERE account_id = #{accountId}
+    </update>
+
+    <update id="updatePassword" parameterType="java.util.Map">
+        UPDATE tb_account SET
+        password = #{password}
+        <if test='isTempPass == "Y"'>
+            ,password_at = null
+        </if>
+        <if test='isTempPass != "Y"'>
+            ,password_at = now()
+        </if>
+        WHERE account_id = #{accountId}
+    </update>
+
+    <update id="updateFcmToken" parameterType="java.util.Map">
+        UPDATE tb_account SET fcm_token = #{fcmToken}
+        WHERE account_id = #{accountId}
+    </update>
+
+    <update id="updateLoginAt" parameterType="int">
+        UPDATE tb_account SET login_at = now()
+        WHERE account_id = #{accountId}
+    </update>
+
+    <update id="deleteFlag" parameterType="int">
+        UPDATE tb_account SET use_fg = 0
+        WHERE account_id = #{accountId}
+    </update>
+
+    <update id="leave" parameterType="java.util.Map">
+        UPDATE tb_account SET
+        use_fg = 0,
+        account_key = concat(account_key, '_leave_', account_id),
+        password = #{reason}
+        WHERE account_id = #{accountId}
+    </update>
+</mapper>

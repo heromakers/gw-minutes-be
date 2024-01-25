@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{adminLayout}">
+
+<th:block layout:fragment="headBlock">
+	<title>[[${menuTitle}]]</title>
+</th:block>
+
+<th:block layout:fragment="mainContent">
+	<div class="content-header">
+		<div class="header-title">
+			<ol class="breadcrumb">
+				<li><a href="/"><i class="pe-7s-home"></i> Home</a></li>
+				<li class="active">[[${menuTitle}]]</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-bd lobidrag">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h4>[[${menuTitle}]]</h4>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form id="accountForm" name="accountForm" action="#" class="mt-4">
+						<div class="form-group row">
+							<label for="accountKey" class="col-md-2 form-control-label">계정명</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="accountKey" name="accountKey" />
+							</div>
+							<th:block th:if="${pageType == 'insert'}">
+								<label for="password" class="col-md-2 form-control-label">비밀번호</label>
+								<div class="col-md-4">
+									<input class="form-control" type="password" id="password" name="password" />
+								</div>
+							</th:block>
+						</div>
+
+						<div class="form-group row">
+							<label for="humanName" class="col-md-2 form-control-label">이름</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="humanName" name="humanName" />
+							</div>
+
+							<label for="phone" class="col-md-2 form-control-label">연락처</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="phone" name="phone" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="email" class="col-md-2 form-control-label">이메일</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="email" name="email" />
+							</div>
+							<label for="roles" class="col-md-2 form-control-label">역할</label>
+							<div class="col-md-4">
+								<select id="roles" name="roles" class="form-control">
+									<option value="ROLE_USER">사용자</option>
+									<option value="ROLE_MANAGER">관리자</option>
+									<option value="ROLE_ADMIN">최고관리자</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="profileImageFile" class="col-md-2 form-control-label">프로필 이미지</label>
+							<div class="col-md-10">
+								<input class="form-control" type="file" id="profileImageFile" name="profileImageFile" onchange="loadImage( this )" />
+								<div id="profileImageArea" class="profileImageDiv" style="padding: 8px; display:none;">
+								</div>
+							</div>
+						</div>
+
+						<div class="m-t-20 text-center">
+							<button class="btn btn-success" type="button" onclick="evList()">목록</button>
+							<button class="btn btn-primary" type="button" onclick="evSave()">저장</button>
+							<th:block th:if="${pageType == 'update'}">
+								<button class="btn btn-warning" type="button" onclick="evDelete()">삭제</button>
+							</th:block>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+
+<th:block layout:fragment="endBlock">
+	<script th:src="@{/dist/js/theme.js}"></script>
+
+	<script>
+	var pageType = "[[${pageType}]]";
+	var accountId = "[[${accountId}]]";
+
+	jQuery(document).ready(function() {
+		if(pageType == "update") {
+			renderAccount();
+		}
+	});
+
+	const renderAccount = () => {
+		jQuery.ajax({
+			url: "/api/account/"+accountId,
+			success: function(response) {
+				if(response && response.status == "success") {
+					let accountModel = response.data;
+					$("#accountKey").val(accountModel.accountKey);
+					$("#humanName").val(accountModel.humanName);
+					$("#phone").val(accountModel.phone);
+					$("#email").val(accountModel.email);
+					$("#roles").val(accountModel.roles);
+
+					if(accountModel.profileImage && accountModel.profileImage.fileUrl) {
+						jQuery("#profileImageArea").html("<img id='"+ accountModel.profileImage.fileId +"' src='"+ accountModel.profileImage.fileUrl +"' style='max-width:100%' /> <button class='btn btn-warning btn-sm' type='button' onclick='removeImage(this)' >X</button>");
+						jQuery("#profileImageArea").show();
+					}
+				}
+			}
+		});
+	}
+
+	const evList = () => {
+		location.href = "/admin/account";
+	}
+
+	const evSave = () => {
+		let saveUrl = "/api/account";
+		let saveMethod = "POST";
+		let accountModel = {};
+
+		if(pageType == "update") {
+			saveMethod = "PUT";
+			accountModel.accountId = accountId;
+		} else {
+			accountModel.password = $("#password").val();
+		}
+		accountModel.accountKey = $("#accountKey").val();
+		accountModel.humanName = $("#humanName").val();
+		accountModel.phone = $("#phone").val();
+		accountModel.email = $("#email").val();
+		accountModel.roles = $("#roles").val();
+
+		let profileImageElement = jQuery("#profileImageArea img");
+		if(profileImageElement) {
+			let fileId = profileImageElement.attr("id");
+			let fileName =  profileImageElement.attr("name");
+			if(fileId) {
+				accountModel.profileImage = { fileId: fileId };
+			} else if(fileName) {
+				let imgSrc = profileImageElement.attr("src");
+				accountModel.profileImage = { realName: fileName, base64String : imgSrc.split(",")[1] };
+			}
+		}
+
+		jQuery.ajax({
+			url: saveUrl,
+			method: saveMethod,
+			data: JSON.stringify( accountModel ),
+			dataType: "json",
+			contentType: "application/json;charset=UTF-8",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("저장되었습니다.");
+					if(pageType == "update") {
+						renderAccount();
+					} else {
+						location.href = "/admin/account";
+					}
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const evDelete = () => {
+		jQuery.ajax({
+			url: "/api/account/"+accountId,
+			method: "DELETE",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("삭제되엇습니다.");
+					location.href = "/admin/account";
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const loadImage = (element) => {
+		let file = element.files[0];
+		let reader = new FileReader();
+
+		reader.onload = function(){
+			jQuery(element).next().html("<img name='"+ file.name +"' src='"+ reader.result +"' style='max-width:100%' /> <button class='btn btn-warning btn-sm' type='button' onclick='removeImage(this)' >X</button>");
+			jQuery(element).next().show();
+		}
+		reader.onerror = function (error) {
+			console.log('Error');
+		};
+
+		reader.readAsDataURL(file);
+	}
+
+	const removeImage = (element) => {
+		jQuery(element).parent().prev().val("");
+		jQuery(element).parent().html("");
+	}
+	</script>
+</th:block>
+
+</html>

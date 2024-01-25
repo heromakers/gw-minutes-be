@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.FileMapper">
+    <resultMap id="FileMap" type="FileModel">
+        <result property="fileId" column="file_id" />
+        <result property="linkInfo" column="link_info" />
+        <result property="linkKey" column="link_key" />
+        <result property="realName" column="real_name" />
+        <result property="fileUrl" column="file_url" />
+        <result property="fileSize" column="file_size" />
+        <result property="savedAt" column="saved_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="linkInfo != null and linkInfo != ''">
+            AND fle.link_info = #{linkInfo}
+        </if>
+        <if test="linkKey != null and linkKey != ''">
+            AND fle.link_key = #{linkKey}
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="FileMap">
+        SELECT fle.*
+        FROM tb_file fle
+        <include refid="whereParams"/>
+        ORDER BY fle.file_id DESC
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_file fle
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="FileMap">
+        SELECT fle.*
+        FROM tb_file fle
+        WHERE file_id = #{fileId}
+    </select>
+
+    <insert id="insert" parameterType="FileModel" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT INTO tb_file (
+        ,link_info
+        ,link_key
+        ,real_name
+        ,file_url
+        ,file_size
+        ,saved_at
+        ) VALUES (
+        ,#{linkInfo}
+        ,#{linkKey}
+        ,#{realName}
+        ,#{fileUrl}
+        ,#{fileSize}
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="fileId">
+            SELECT LAST_INSERT_ID() as fileId
+        </selectKey>
+    </insert>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM tb_file
+        WHERE file_id = #{fileId}
+    </delete>
+
+</mapper>

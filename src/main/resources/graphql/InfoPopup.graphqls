@@ -1,0 +1,41 @@
+type InfoPopupModel {
+    seq : ID!
+    code : String
+    kind : String
+    status : String
+    title : String
+    details : String
+    options : String
+    startDate : String
+    endDate : String
+    popupImage : FileModel
+    registerId : Int
+    register : String
+    showFlag : Boolean
+    editedAt : String
+}
+
+input InfoPopupParam {
+    code : String
+    kind : String
+    status : String
+    title : String
+    details : String
+    options : String
+    startDate : String
+    endDate : String
+    popupImage : FileParam
+    registerId : Int
+    register : String
+}
+
+extend type Query {
+    infoPopupList(isActive: String, schTxt: String, showFlag: Boolean, infoPopupParam: InfoPopupParam) : [InfoPopupModel]
+    infoPopupById(seq : Int!) : InfoPopupModel
+}
+
+extend type Mutation {
+    insertInfoPopup(infoPopupParam: InfoPopupParam!): Result
+    updateInfoPopup(seq: Int!, infoPopupParam: InfoPopupParam!): Result
+    deleteInfoPopup(seq: Int!): Result
+}

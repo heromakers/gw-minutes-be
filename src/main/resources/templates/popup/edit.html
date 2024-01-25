@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{adminLayout}">
+
+<th:block layout:fragment="headBlock">
+	<title>[[${menuTitle}]]</title>
+</th:block>
+
+<th:block layout:fragment="mainContent">
+	<div class="content-header">
+		<div class="header-title">
+			<ol class="breadcrumb">
+				<li><a href="/"><i class="pe-7s-home"></i> Home</a></li>
+				<li class="active">[[${menuTitle}]]</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-bd lobidrag">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h4>[[${menuTitle}]]</h4>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form id="codeForm" name="codeForm" action="#" class="mt-4">
+						<div class="form-group row">
+							<label for="code" class="col-md-2 form-control-label">식별코드</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="code" name="code" />
+							</div>
+							<label for="kind" class="col-md-2 form-control-label">종류</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="kind" name="kind" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="title" class="col-md-2 form-control-label">제목</label>
+							<div class="col-md-10">
+								<input class="form-control" type="text" id="title" name="title" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="details" class="col-md-2 form-control-label">상세내역</label>
+							<div class="col-md-10">
+								<textarea class="form-control" id="details" name="details" rows="4"></textarea>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="popupImageFile" class="col-md-2 form-control-label">팝업 이미지</label>
+							<div class="col-md-10">
+								<input class="form-control" type="file" id="popupImageFile" name="popupImageFile" onchange="loadImage( this )" />
+								<div id="popupImageArea" class="popupImageDiv" style="padding: 8px; display:none;">
+								</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="options" class="col-md-2 form-control-label">옵션</label>
+							<div class="col-md-10">
+								<textarea class="form-control" id="options" name="options" rows="4"></textarea>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="startDate" class="col-md-2 form-control-label">게시 시작일자</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="startDate" name="startDate" />
+							</div>
+							<label for="endDate" class="col-md-2 form-control-label">게시 종료일자</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="endDate" name="endDate" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="status" class="col-md-2 form-control-label">상태</label>
+							<div class="col-md-4">
+								<input class="form-control" type="text" id="status" name="status" />
+							</div>
+							<label for="register" class="col-md-2 form-control-label">게시자</label>
+							<div class="col-md-2">
+								<input class="form-control" type="text" id="registerId" name="registerId" />
+							</div>
+							<div class="col-md-2">
+								<input class="form-control" type="text" id="register" name="register" />
+							</div>
+						</div>
+
+						<div class="m-t-20 text-center">
+							<button class="btn btn-success" type="button" onclick="evList()">목록</button>
+							<button class="btn btn-primary" type="button" onclick="evSave()">저장</button>
+							<th:block th:if="${pageType == 'update'}">
+								<button class="btn btn-warning" type="button" onclick="evDelete()">삭제</button>
+							</th:block>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+
+<th:block layout:fragment="endBlock">
+	<script th:src="@{/dist/js/theme.js}"></script>
+
+	<script>
+	var pageType = "[[${pageType}]]";
+	var seq = "[[${seq}]]";
+
+	jQuery(document).ready(function() {
+		if(pageType == "update") {
+			renderPopup();
+		}
+	});
+
+	const renderPopup = () => {
+		jQuery.ajax({
+			url: "/api/popup/"+seq,
+			success: function(response) {
+				if(response && response.status == "success") {
+					let popupModel = response.data;
+					$("#code").val(popupModel.code);
+					$("#kind").val(popupModel.kind);
+					$("#title").val(popupModel.title);
+					$("#details").val(popupModel.details);
+					$("#options").val(popupModel.options);
+					$("#startDate").val(popupModel.startDate);
+					$("#endDate").val(popupModel.endDate);
+					$("#status").val(popupModel.status);
+					$("#registerId").val(popupModel.registerId);
+					$("#register").val(popupModel.register);
+
+					if(popupModel.popupImage && popupModel.popupImage.fileUrl) {
+						jQuery("#popupImageArea").html("<img id='"+ popupModel.popupImage.fileId +"' src='"+ popupModel.popupImage.fileUrl +"' style='max-width:100%' /> <button class='btn btn-warning btn-sm' type='button' onclick='removeImage(this)' >X</button>");
+						jQuery("#popupImageArea").show();
+					}
+				}
+			}
+		});
+	}
+
+	const evList = () => {
+		location.href = "/admin/popup";
+	}
+
+	const evSave = () => {
+		let saveUrl = "/api/popup";
+		let saveMethod = "POST";
+		let popupModel = {};
+
+		if(pageType == "update") {
+			saveMethod = "PUT";
+			popupModel.seq = seq;
+		}
+		popupModel.code = $("#code").val();
+		popupModel.kind = $("#kind").val();
+		popupModel.title = $("#title").val();
+		popupModel.details = $("#details").val();
+		popupModel.options = $("#options").val();
+		popupModel.startDate = $("#startDate").val();
+		popupModel.endDate = $("#endDate").val();
+		popupModel.status = $("#status").val();
+		popupModel.registerId = $("#registerId").val();
+
+		let popupImageElement = jQuery("#popupImageArea img");
+		if(popupImageElement) {
+			let fileId = popupImageElement.attr("id");
+			let fileName = popupImageElement.attr("name");
+			if(fileId) {
+				popupModel.popupImage = { fileId: fileId };
+			} else if(fileName) {
+				let imgSrc = popupImageElement.attr("src");
+				popupModel.popupImage = { realName: fileName, base64String : imgSrc.split(",")[1] };
+			}
+		}
+
+		jQuery.ajax({
+			url: saveUrl,
+			method: saveMethod,
+			data: JSON.stringify( popupModel ),
+			dataType: "json",
+			contentType: "application/json;charset=UTF-8",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("저장되었습니다.");
+					if(pageType == "update") {
+						renderPopup();
+					} else {
+						location.href = "/admin/popup";
+					}
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const evDelete = () => {
+		jQuery.ajax({
+			url: "/api/popup/"+seq,
+			method: "DELETE",
+			success: function(response) {
+				if(response && response.status == "success") {
+					alert("삭제되었습니다.");
+					location.href = "/admin/popup";
+				} else {
+					alert(response.message);
+				}
+			}
+		});
+	}
+
+	const loadImage = (element) => {
+		let file = element.files[0];
+		let reader = new FileReader();
+
+		reader.onload = function(){
+			jQuery(element).next().html("<img name='"+ file.name +"' src='"+ reader.result +"' style='max-width:100%' /> <button class='btn btn-warning btn-sm' type='button' onclick='removeImage(this)' >X</button>");
+			jQuery(element).next().show();
+		}
+		reader.onerror = function (error) {
+			console.log('Error');
+		};
+
+		reader.readAsDataURL(file);
+	}
+
+	const removeImage = (element) => {
+		jQuery(element).parent().prev().val("");
+		jQuery(element).parent().html("");
+	}
+	</script>
+</th:block>
+
+</html>

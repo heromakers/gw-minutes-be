@@ -1,0 +1,20 @@
+# Root
+type Query {
+    #test : String
+}
+
+# Root
+type Mutation {
+    #test : Result
+}
+
+enum ResultStatus {
+    success , fail , expired , invalid , malformed , denied, error
+}
+
+type Result {
+    status : ResultStatus
+    reason : String
+    message : String
+    data : String
+}

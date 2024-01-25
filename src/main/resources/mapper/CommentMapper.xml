@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.CommentMapper">
+    <resultMap id="CommentMap" type="CommentModel">
+        <result property="commentId" column="comment_id" />
+        <result property="parentKind" column="parent_kind" />
+        <result property="parentKindTitle" column="parentKindTitle" />
+        <result property="parentId" column="parent_id" />
+        <result property="precedingId" column="preceding_id" />
+        <result property="writerId" column="writer_id" />
+        <result property="writerName" column="human_name" />
+        <result property="writerModel.accountKey" column="account_key" />
+        <result property="writerModel.humanName" column="human_name" />
+        <result property="contents" column="contents" />
+        <result property="useFlag" column="use_fg" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="useFlag != null and useFlag != ''">
+            AND cmt.use_fg = #{useFlag}
+        </if>
+        <if test="parentKind != null and parentKind != ''">
+            AND cmt.parent_kind = #{parentKind}
+        </if>
+        <if test="parentId != null and parentId != ''">
+            AND cmt.parent_id = #{parentId}
+        </if>
+        <if test="writerId != null and writerId != ''">
+            AND cmt.writer_id = #{writerId}
+        </if>
+        <if test="contents != null and contents != ''">
+            AND cmt.contents LIKE concat('%', #{contents}, '%')
+        </if>
+        <if test="schTxt != null and schTxt != ''">
+            AND (
+            ( acnt.human_name LIKE concat('%', #{schTxt}, '%') ) OR
+            ( cmt.contents    LIKE concat('%', #{schTxt}, '%') )
+            )
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="CommentMap">
+        SELECT cmt.*
+            ,cod.code_label AS parentKindTitle
+            ,acnt.account_key
+            ,acnt.human_name
+        FROM tb_comment cmt
+        LEFT JOIN tb_code cod ON cod.p_code = 'COMMENT_PARENT' and cod.code = cmt.parent_kind
+        LEFT JOIN tb_account acnt ON acnt.account_id = cmt.writer_id
+        <include refid="whereParams"/>
+        ORDER BY cmt.comment_id DESC
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_comment cmt
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="CommentMap">
+        SELECT cmt.*
+            ,cod.code_label AS parentKindTitle
+            ,acnt.account_key
+            ,acnt.human_name
+        FROM tb_comment cmt
+        LEFT JOIN tb_code cod ON cod.p_code = 'COMMENT_PARENT' and cod.code = cmt.parent_kind
+        LEFT JOIN tb_account acnt ON acnt.account_id = cmt.writer_id
+        WHERE comment_id = #{commentId}
+    </select>
+
+    <insert id="insert" parameterType="CommentModel" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO tb_comment (
+        parent_kind
+        ,parent_id
+        ,preceding_id
+        ,writer_id
+        ,contents
+        ,use_fg
+        ,created_at
+        ,updated_at
+        ) VALUES (
+        #{parentKind}
+        ,#{parentId}
+        ,#{precedingId}
+        ,#{writerId}
+        ,#{contents}
+        ,1
+        ,now()
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="commentId">
+            SELECT LAST_INSERT_ID() as commentId
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="CommentModel">
+        UPDATE tb_comment SET
+        updated_at = now()
+        <if test="contents != null and contents != ''">
+            ,contents = #{contents}
+        </if>
+        WHERE comment_id = #{commentId}
+    </update>
+
+    <update id="deleteFlag" parameterType="int">
+        UPDATE tb_comment SET use_fg = 0
+        WHERE comment_id = #{commentId}
+    </update>
+</mapper>

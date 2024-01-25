@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.CodeMapper">
+    <resultMap id="CodeMap" type="CodeModel">
+        <result property="codeId" column="code_id" />
+        <result property="parentCode" column="p_code" />
+        <result property="code" column="code" />
+        <result property="codeLabel" column="code_label" />
+        <result property="memo" column="memo" />
+        <result property="stringValue" column="str_val" />
+        <result property="numberValue" column="num_val" />
+        <result property="useFlag" column="use_fg" />
+        <result property="editedAt" column="edited_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="useFlag != null and useFlag != ''">
+            AND cod.use_fg = #{useFlag}
+        </if>
+        <if test="parentCode != null and parentCode != ''">
+            AND cod.p_code = #{parentCode}
+        </if>
+        <if test="codeLabel != null and codeLabel != ''">
+            AND cod.code_label LIKE concat('%', #{codeLabel}, '%')
+        </if>
+        <if test="schTxt != null and schTxt != ''">
+            AND (
+            ( cod.code       LIKE concat('%', #{schTxt}, '%') ) OR
+            ( cod.code_label LIKE concat('%', #{schTxt}, '%') )
+            )
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="CodeMap">
+        SELECT cod.*
+        FROM tb_code cod
+        <include refid="whereParams"/>
+        ORDER BY cod.p_code, cod.code
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_code cod
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="CodeMap">
+        SELECT cod.*
+        FROM tb_code cod
+        WHERE code_id = #{codeId}
+    </select>
+
+    <insert id="insert" parameterType="CodeModel" useGeneratedKeys="true" keyProperty="codeId">
+        INSERT INTO tb_code (
+        p_code
+        ,code
+        ,code_label
+        ,memo
+        ,str_val
+        ,num_val
+        ,use_fg
+        ,edited_at
+        ) VALUES (
+        #{parentCode}
+        ,#{code}
+        ,#{codeLabel}
+        ,#{memo}
+        ,#{stringValue}
+        ,#{numberValue}
+        ,1
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="codeId">
+            SELECT LAST_INSERT_ID() as codeId
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="CodeModel">
+        UPDATE tb_code SET
+        edited_at = now()
+        <if test="codeLabel != null and codeLabel != ''">
+            ,code_label = #{codeLabel}
+        </if>
+        <if test="memo != null and memo != ''">
+            ,memo = #{memo}
+        </if>
+        <if test="stringValue != null and stringValue != ''">
+            ,str_val = #{stringValue}
+        </if>
+        <if test="numberValue != null and numberValue != ''">
+            ,num_val = #{numberValue}
+        </if>
+        WHERE code_id = #{codeId}
+    </update>
+
+    <update id="deleteFlag" parameterType="int">
+        UPDATE tb_code SET use_fg = 0
+        WHERE code_id = #{codeId}
+    </update>
+
+</mapper>

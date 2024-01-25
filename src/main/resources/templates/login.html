@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="shortcut icon" th:href="@{/dist/img/favicon.png}" type="image/x-icon">
+
+	<title>로그인</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+	<script>
+		WebFont.load({
+			google: {families: ['Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i']},
+			active: function () {
+				localStorage.fonts = true;
+			}
+		});
+	</script>
+	<!-- START GLOBAL MANDATORY STYLE -->
+	<link th:href="@{/dist/css/base.css}" rel="stylesheet" type="text/css">
+	<!-- START THEME LAYOUT STYLE -->
+	<link th:href="@{/dist/css/style.css}" rel="stylesheet" type="text/css" />
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body class="hold-transition fixed sidebar-mini">
+
+	<!-- Content Wrapper -->
+	<div class="login-wrapper">
+		<div class="container-center">
+			<div class="panel panel-bd">
+				<div class="panel-heading">
+					<div class="view-header">
+						<div class="header-icon">
+							<i class="pe-7s-unlock"></i>
+						</div>
+						<div class="header-title">
+							<h3>로그인</h3>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form action="#" id="loginForm">
+						<div class="form-group">
+							<label class="control-label">계정</label>
+							<div class="input-group">
+								<span class="input-group-addon"><i class="glyphicon glyphicon-log-in"></i></span>
+								<input id="accountKey" type="text" class="form-control" name="accountKey" placeholder="admin">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label">비밀번호</label>
+							<div class="input-group">
+								<span class="input-group-addon"><i class="fa fa-key"></i></span>
+								<input id="password" type="password" class="form-control" name="password">
+							</div>
+						</div>
+						<div>
+							<a href="#" onclick="evLogin()" class="btn btn-base pull-right">로그인</a>
+	<!--						<a href="join" class="btn btn-base pull-right m-r-5">회원가입</a>-->
+						</div>
+					</form>
+				</div>
+			</div>
+			<!--<div id="bottom_text">
+				<a href="findPassword">계정 찾기, 비밀 번호 재설정</a>
+			</div>-->
+
+		</div>
+	</div>  <!-- /.content-wrapper -->
+
+	<!-- START CORE PLUGINS -->
+	<script th:src="@{/plugins/jQuery/jquery-1.12.4.min.js}"></script>
+	<script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+	<script>
+	jQuery(document).ready(function() {
+	});
+
+	const evLogin = () => {
+		let accountModel = {};
+		accountModel.accountKey = $("#accountKey").val();
+		accountModel.password = $("#password").val();
+
+		jQuery.ajax({
+			url: "/api/login",
+			method: "POST",
+			data: JSON.stringify( accountModel ),
+			dataType: "json",
+			contentType: "application/json;charset=UTF-8",
+			success: function(response) {
+				if(!response) {
+					alert("로그인에 실패하였습니다.");
+					return;
+				}
+				if(response.status != "success") {
+					if(response.message) {
+						alert(response.message);
+					} else {
+						alert("로그인에 실패하였습니다.");
+					}
+					if(response.reason == "ToUpdatePassword") {
+						location.href = "/admin/reset-password";
+					}
+				} else if(response.reason == "Password6Month") {
+					alert(response.message);
+					localStorage.setItem("frenz-authToken", response.authToken);
+					localStorage.setItem("frenz-refreshToken", response.refreshToken);
+					localStorage.setItem("frenz-roles", response.data.roles);
+					location.href = "/admin/notice";
+				} else {
+					alert("로그인 되었습니다.");
+					localStorage.setItem("frenz-authToken", response.authToken);
+					localStorage.setItem("frenz-refreshToken", response.refreshToken);
+					localStorage.setItem("frenz-roles", response.data.roles);
+					location.href = "/admin/notice";
+				}
+			}
+		});
+	}
+	</script>
+</body>
+</html>

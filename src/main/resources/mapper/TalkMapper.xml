@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heromakers.app.frenz.mapper.TalkMapper">
+    <resultMap id="TalkMap" type="TalkModel">
+        <result property="talkId" column="talk_id" />
+        <result property="talkKind" column="talk_kind" />
+        <result property="talkKindTitle" column="talkKindTitle" />
+        <result property="writerId" column="writer_id" />
+        <result property="writerName" column="human_name" />
+        <result property="writerModel.accountKey" column="account_key" />
+        <result property="writerModel.humanName" column="human_name" />
+        <result property="title" column="title" />
+        <result property="contents" column="contents" />
+        <result property="mainImage.fileUrl" column="file_url" />
+        <result property="readCount" column="read_count" />
+        <result property="useFlag" column="use_fg" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="whereParams">
+        WHERE 1 = 1
+        <if test="useFlag != null and useFlag != ''">
+            AND tok.use_fg = #{useFlag}
+        </if>
+        <if test="talkKind != null and talkKind != ''">
+            AND tok.talk_kind = #{talkKind}
+        </if>
+        <if test="writerId != null and writerId != ''">
+            AND tok.writer_id = #{writerId}
+        </if>
+        <if test="title != null and title != ''">
+            AND tok.title LIKE concat('%', #{title}, '%')
+        </if>
+        <if test="schTxt != null and schTxt != ''">
+            AND (
+            ( tok.title       LIKE concat('%', #{schTxt}, '%') ) OR
+            ( tok.contents    LIKE concat('%', #{schTxt}, '%') ) OR
+            ( acnt.human_name LIKE concat('%', #{schTxt}, '%') )
+            )
+        </if>
+    </sql>
+
+    <select id="queryList" parameterType="java.util.Map" resultMap="TalkMap">
+        SELECT tok.*
+            ,cod.code_label AS talkKindTitle
+            ,acnt.account_key
+            ,acnt.human_name
+            ,fle.file_url
+        FROM tb_talk tok
+        LEFT JOIN tb_code cod ON cod.p_code = 'TALK_KIND' and cod.code = tok.talk_kind
+        LEFT JOIN tb_account acnt ON acnt.account_id = tok.writer_id
+        LEFT JOIN tb_file fle ON fle.link_info = 'talkMainImage' and fle.link_key = tok.talk_id
+        <include refid="whereParams"/>
+        ORDER BY tok.talk_id DESC
+        <if test="listCount != null and listCount != ''">
+            LIMIT <if test="skipCount != null and skipCount != ''"> ${skipCount} , </if> ${listCount}
+        </if>
+    </select>
+
+    <select id="queryCount" parameterType="java.util.Map" resultType="int">
+        SELECT count(1)
+        FROM tb_talk tok
+        <include refid="whereParams"/>
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="TalkMap">
+        SELECT tok.*
+            ,cod.code_label AS talkKindTitle
+            ,acnt.account_key
+            ,acnt.human_name
+            ,fle.file_url
+        FROM tb_talk tok
+        LEFT JOIN tb_code cod ON cod.p_code = 'TALK_KIND' and cod.code = tok.talk_kind
+        LEFT JOIN tb_account acnt ON acnt.account_id = tok.writer_id
+        LEFT JOIN tb_file fle ON fle.link_info = 'talkMainImage' and fle.link_key = tok.talk_id
+        WHERE talk_id = #{talkId}
+    </select>
+
+    <insert id="insert" parameterType="TalkModel" useGeneratedKeys="true" keyProperty="talkId">
+        INSERT INTO tb_talk (
+        talk_kind
+        ,writer_id
+        ,title
+        ,contents
+        ,read_count
+        ,use_fg
+        ,created_at
+        ,updated_at
+        ) VALUES (
+        #{talkKind}
+        ,#{writerId}
+        ,#{title}
+        ,#{contents}
+        ,0
+        ,1
+        ,now()
+        ,now()
+        )
+        <selectKey resultType="int" order="AFTER" keyProperty="talkId">
+            SELECT LAST_INSERT_ID() as talkId
+        </selectKey>
+    </insert>
+
+    <update id="update" parameterType="TalkModel">
+        UPDATE tb_talk SET
+        updated_at = now()
+        <if test="talkKind != null and talkKind != ''">
+            ,talk_kind = #{talkKind}
+        </if>
+        <if test="title != null and title != ''">
+            ,title = #{title}
+        </if>
+        <if test="contents != null and contents != ''">
+            ,contents = #{contents}
+        </if>
+        WHERE talk_id = #{talkId}
+    </update>
+
+    <update id="increaseReadCount" parameterType="int">
+        UPDATE tb_talk SET
+        read_count = IFNULL(read_count, 0) + 1
+        WHERE talk_id = #{talkId}
+    </update>
+
+    <update id="deleteFlag" parameterType="int">
+        UPDATE tb_talk SET use_fg = 0
+        WHERE talk_id = #{talkId}
+    </update>
+</mapper>

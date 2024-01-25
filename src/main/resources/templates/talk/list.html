@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{adminLayout}">
+
+<th:block layout:fragment="headBlock">
+	<title>[[${menuTitle}]]</title>
+	<link th:href="@{/plugins/datatables/dataTables.min.css}" rel="stylesheet" type="text/css">
+</th:block>
+
+<th:block layout:fragment="mainContent">
+	<div class="content-header">
+		<div class="header-title">
+			<ol class="breadcrumb">
+				<li><a href="/"><i class="pe-7s-home"></i> Home</a></li>
+				<li class="active">[[${menuTitle}]]</li>
+			</ol>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-bd lobidrag">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<h4>[[${menuTitle}]]</h4>
+					</div>
+				</div>
+
+				<div class="panel-body">
+					<div class="form-group row">
+						<div class="col-md-2">
+							<select id="talkKind" name="talkKind" class="form-control">
+								<option value="">전체</option>
+								<option th:each="kind : ${talkKinds}" th:value="${kind?.code}"
+										th:utext="${kind?.codeLabel}">
+								</option>
+							</select>
+						</div>
+						<div class="col-md-6">
+							<input type="text" id="schTxt" name="schTxt" class="form-control">
+						</div>
+						<div class="col-md-4 align-self-center text-end">
+							<button class="btn btn-success" onclick="evSearch()">검색</button>
+							<button class="btn btn-primary" onclick="evAdd()">추가</button>
+						</div>
+					</div>
+					<div class="table-responsive" style="overflow-x:hidden">
+						<table id="talkGrid" class="table table-bordered table-striped table-hover">
+							<thead>
+							<tr>
+								<th>종류</th>
+								<th>작성자</th>
+								<th>제목</th>
+								<th>조회수</th>
+								<th>작성일시</th>
+							</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</th:block>
+
+<th:block layout:fragment="endBlock">
+	<script th:src="@{/plugins/datatables/dataTables.min.js}"></script>
+	<script>
+	var talkGrid = null;
+	jQuery(document).ready(function() {
+		"use strict"; // Start of use strict
+
+		talkGrid = jQuery("#talkGrid").DataTable({
+			dom: "<'row dataTableInner'<'col-sm-4'l><'col-sm-4 text-center'B><'col-sm-4'f>>tp",
+				"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+			buttons: [
+				{extend: 'copy', className: 'btn-sm'},
+				{extend: 'csv', className: 'btn-sm'},
+				{extend: 'excel', className: 'btn-sm'},
+				{extend: 'pdf', className: 'btn-sm'},
+				{extend: 'print', className: 'btn-sm'}
+			],
+			ajax: '/api/talk?useFlag=1',
+			columns: [
+				{'data':'talkKind'},
+				{'data':'writerName'},
+				{'data':'title'},
+				{'data':'readCount'},
+				{'data':'updatedAt'}
+			]
+		});
+		jQuery('#talkGrid tbody').on('click', 'tr', function () {
+			let rowData = talkGrid.row( jQuery(this) ).data();
+			location.href = "/admin/talk/"+ rowData.talkId;
+		});
+	});
+
+	const evSearch = () => {
+		let url = "/api/talk?useFlag=1";
+		let schTxt = $("#schTxt").val();
+		let talkKind = $("#talkKind").val();
+		if ( schTxt ) {
+			url += "&schTxt=" + schTxt;
+		}
+		if ( talkKind ) {
+			url += "&talkKind=" + talkKind;
+		}
+		talkGrid.ajax.url( url ).load();
+	}
+
+	const evAdd = () => {
+		location.href = "/admin/talk/add";
+	}
+	</script>
+
+	<script th:src="@{/dist/js/theme.js}"></script>
+</th:block>
+
+</html>

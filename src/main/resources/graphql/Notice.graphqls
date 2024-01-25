@@ -1,0 +1,36 @@
+type NoticeModel {
+    noticeId : ID!
+    title : String!
+    noticeKind : String
+    noticeKindTitle : String
+    writer : String
+    writerId : Int
+    contents : String
+    readCount : Int
+    mainImage : FileModel
+    useFlag : Boolean
+    createdAt : String
+    updatedAt : String
+}
+
+input NoticeParam {
+    title : String
+    noticeKind : String
+    writer : String
+    writerId : Int
+    contents : String
+    mainImage : FileParam
+#    fileRealName : String
+#    base64String : String
+}
+
+extend type Query {
+    noticeList(schTxt: String, useFlag: Boolean, noticeParam: NoticeParam) : [NoticeModel]
+    noticeById(noticeId : Int!) : NoticeModel
+}
+
+extend type Mutation {
+    insertNotice(noticeParam: NoticeParam!): Result
+    updateNotice(noticeId: Int!, noticeParam: NoticeParam!): Result
+    deleteNotice(noticeId: Int!): Result
+}
