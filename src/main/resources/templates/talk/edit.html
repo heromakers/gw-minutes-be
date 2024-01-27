@@ -211,7 +211,7 @@
 			let fileModel = {};
 			fileModel.base64String = readResult.split(",")[1];
 			fileModel.realName = file.name;
-			fileModel.linkKind = "editorFile";
+			fileModel.linkInfo = "talkEditor";
 			if(!talkId) talkId = "0";
 			fileModel.linkKey = talkId;
 
