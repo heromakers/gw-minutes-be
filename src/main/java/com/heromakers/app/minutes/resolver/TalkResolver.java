@@ -29,7 +29,7 @@ public class TalkResolver {
 
     @QueryMapping
     public List<TalkModel> talkList(@Argument String schTxt, @Argument Boolean useFlag, @Argument TalkModel talkParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(useFlag != null) param.put("useFlag", useFlag);
         if(talkParam != null) {
@@ -51,17 +51,19 @@ public class TalkResolver {
     @MutationMapping
     public Result insertTalk(@Argument TalkModel talkParam) {
         Result result = new Result();
-        TalkModel saved = talkService.insertTalk(talkParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            TalkModel saved = talkService.insertTalk(talkParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("데이터를 저장하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }

@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         String authToken = jwtTokenProvider.resolveAuthToken(httpRequest);
 
         if("frenz-admin-20241231".equals(authToken)) {
-            authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzA1MTM4NzYzLCJleHAiOjE3Mzk2OTg3NjN9.DjmEaRWVifrkTIxP-26i4Xvzvs8MewO-gmZBp-f8ra8";
+            authToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaWF0IjoxNzA2MzQ2ODk5LCJleHAiOjE3NDA5MDY4OTl9._DleQzb7d8aHhC3lwFWweMvP7Q6P4N190F74PzJ1_vE";
         }
 
         if (authToken != null && !authToken.isEmpty()) {

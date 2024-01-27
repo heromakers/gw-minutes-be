@@ -29,7 +29,7 @@ public class CodeResolver {
 
     @QueryMapping
     public List<CodeModel> codeList(@Argument String schTxt, @Argument Boolean useFlag, @Argument CodeModel codeParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(useFlag != null) param.put("useFlag", useFlag);
         if(codeParam != null) {
@@ -49,17 +49,19 @@ public class CodeResolver {
     @MutationMapping
     public Result insertCode(@Argument CodeModel codeParam) {
         Result result = new Result();
-        CodeModel saved = codeService.insertCode(codeParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            CodeModel saved = codeService.insertCode(codeParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("데이터를 저장하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }

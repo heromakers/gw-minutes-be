@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.heromakers.app.minutes.common.Result;
 import com.heromakers.app.minutes.common.ResultStatus;
+import com.heromakers.app.minutes.model.CodeModel;
 import com.heromakers.app.minutes.model.CommentModel;
 import com.heromakers.app.minutes.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class CommentResolver {
 
     @QueryMapping
     public List<CommentModel> commentList(@Argument String schTxt, @Argument Boolean useFlag, @Argument CommentModel commentParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(useFlag != null) param.put("useFlag", useFlag);
         if(commentParam != null) {
@@ -53,17 +54,19 @@ public class CommentResolver {
     @MutationMapping
     public Result insertComment(@Argument CommentModel commentParam) {
         Result result = new Result();
-        CommentModel saved = commentService.insertComment(commentParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            CommentModel saved = commentService.insertComment(commentParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("데이터를 저장하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }

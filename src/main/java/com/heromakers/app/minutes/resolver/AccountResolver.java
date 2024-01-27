@@ -53,9 +53,10 @@ public class AccountResolver {
     }
 
     @MutationMapping
-    public Result insertAccount(@Argument AccountModel accountParam) {
+    public Result insertAccount(@Argument AccountModel accountParam, @Argument String password) {
         Result result = new Result();
         try {
+            accountParam.setPassword(password);
             AccountModel saved = accountService.insertAccount(accountParam);
             if(saved == null) {
                 result.setStatus(ResultStatus.fail);
@@ -67,7 +68,7 @@ public class AccountResolver {
         } catch (Exception e) {
             result.setStatus(ResultStatus.error);
             result.setReason("Exception");
-            result.setMessage("에러가 발생하였습니다.");
+            result.setMessage(e.getMessage());
         }
 
         return result;

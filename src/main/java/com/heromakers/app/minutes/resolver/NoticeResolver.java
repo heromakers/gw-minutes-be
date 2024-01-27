@@ -29,7 +29,7 @@ public class NoticeResolver {
 
     @QueryMapping
     public List<NoticeModel> noticeList(@Argument String schTxt, @Argument Boolean useFlag, @Argument NoticeModel noticeParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(useFlag != null) param.put("useFlag", useFlag);
         if(noticeParam != null) {
@@ -49,17 +49,19 @@ public class NoticeResolver {
     @MutationMapping
     public Result insertNotice(@Argument NoticeModel noticeParam) {
         Result result = new Result();
-        NoticeModel saved = noticeService.insertNotice(noticeParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            NoticeModel saved = noticeService.insertNotice(noticeParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("데이터를 저장하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }

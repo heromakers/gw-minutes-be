@@ -29,7 +29,7 @@ public class InfoPopupResolver {
 
     @QueryMapping
     public List<InfoPopupModel> infoPopupList(@Argument String isActive, @Argument String schTxt, @Argument Boolean showFlag, @Argument InfoPopupModel infoPopupParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(isActive != null && !isActive.isEmpty()) param.put("isActive", isActive);
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(showFlag != null) param.put("showFlag", showFlag);
@@ -50,17 +50,19 @@ public class InfoPopupResolver {
     @MutationMapping
     public Result insertInfoPopup(@Argument InfoPopupModel infoPopupParam) {
         Result result = new Result();
-        InfoPopupModel saved = infoPopupService.insertInfoPopup(infoPopupParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            InfoPopupModel saved = infoPopupService.insertInfoPopup(infoPopupParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("데이터를 저장하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }

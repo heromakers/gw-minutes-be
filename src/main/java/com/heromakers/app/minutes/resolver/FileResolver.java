@@ -29,7 +29,7 @@ public class FileResolver {
 
     @QueryMapping
     public List<FileModel> fileList(@Argument FileModel fileParam) {
-        Map param = new HashMap();
+        Map<String, Object> param = new HashMap<>();
         if(fileParam != null) {
             String linkInfo= fileParam.getLinkInfo();
             if(linkInfo != null && !linkInfo.isEmpty()) param.put("linkInfo", linkInfo);
@@ -47,17 +47,19 @@ public class FileResolver {
     @MutationMapping
     public Result uploadFile(@Argument FileModel fileParam) {
         Result result = new Result();
-        FileModel saved = fileService.uploadS3File(fileParam);
-        if(saved == null) {
-            result.setStatus(ResultStatus.fail);
-            result.setMessage("에러가 발생하였습니다.");
-        } else {
-            try {
+        try {
+            FileModel saved = fileService.uploadS3File(fileParam);
+            if(saved == null) {
+                result.setStatus(ResultStatus.fail);
+                result.setMessage("파일을 업로드하지 못했습니다.");
+            } else {
                 objectMapper.registerModule(new JavaTimeModule());
                 result.setData(objectMapper.writeValueAsString(saved));
-            } catch (JsonProcessingException je) {
-                je.printStackTrace();
             }
+        } catch (Exception e) {
+            result.setStatus(ResultStatus.error);
+            result.setReason("Exception");
+            result.setMessage(e.getMessage());
         }
         return result;
     }
