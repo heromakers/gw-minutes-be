@@ -3,7 +3,7 @@ type AccountModel {
     accountKey : String
     joinType : String
     snsKey : String
-    humanName : String
+    humanName : String!
     phone : String
     postcode : String
     address : String
