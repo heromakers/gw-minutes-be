@@ -213,7 +213,7 @@
 			let fileModel = {};
 			fileModel.base64String = readResult.split(",")[1];
 			fileModel.realName = file.name;
-			fileModel.linkKind = "editorFile";
+			fileModel.linkInfo = "noticeEditor";
 			if(!noticeId) noticeId = "0";
 			fileModel.linkKey = noticeId;
 
