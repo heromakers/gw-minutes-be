@@ -34,8 +34,6 @@ public class CommentResolver {
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
         if(useFlag != null) param.put("useFlag", useFlag);
         if(commentParam != null) {
-            String parentKind = commentParam.getParentKind();
-            if(parentKind != null && !parentKind.isEmpty()) param.put("parentKind", parentKind);
             Integer parentId = commentParam.getParentId();
             if(parentId != null) param.put("parentId", parentId);
             Integer writerId = commentParam.getWriterId();

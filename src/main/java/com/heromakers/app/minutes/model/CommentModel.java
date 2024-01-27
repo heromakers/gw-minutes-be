@@ -26,9 +26,6 @@ public class CommentModel implements Serializable{
     @Column(name = "comment_id", nullable = false)
     private Integer commentId;
 
-    @Column(name = "parent_kind")
-    private String parentKind;
-
     @Column(name = "parent_id")
     private Integer parentId;
 
@@ -66,6 +63,4 @@ public class CommentModel implements Serializable{
     @Transient
     private String writerName;
 
-    @Transient
-    private String parentKindTitle;
 }
