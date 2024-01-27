@@ -1,7 +1,6 @@
 package com.heromakers.app.minutes.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,11 +27,9 @@ public class FileModel implements Serializable {
     @Column(name = "file_id", nullable = false)
     private Integer fileId;
 
-    @JsonIgnore
     @Column(name = "link_info")
     private String linkInfo;
 
-    @JsonIgnore
     @Column(name = "link_key")
     private Integer linkKey;
 
