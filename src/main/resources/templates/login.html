@@ -107,15 +107,15 @@
 					}
 				} else if(response.reason == "Password6Month") {
 					alert(response.message);
-					localStorage.setItem("frenz-authToken", response.authToken);
-					localStorage.setItem("frenz-refreshToken", response.refreshToken);
-					localStorage.setItem("frenz-roles", response.data.roles);
+					localStorage.setItem("minutes-authToken", response.authToken);
+					localStorage.setItem("minutes-refreshToken", response.refreshToken);
+					localStorage.setItem("minutes-roles", response.data.roles);
 					location.href = "/admin/notice";
 				} else {
 					alert("로그인 되었습니다.");
-					localStorage.setItem("frenz-authToken", response.authToken);
-					localStorage.setItem("frenz-refreshToken", response.refreshToken);
-					localStorage.setItem("frenz-roles", response.data.roles);
+					localStorage.setItem("minutes-authToken", response.authToken);
+					localStorage.setItem("minutes-refreshToken", response.refreshToken);
+					localStorage.setItem("minutes-roles", response.data.roles);
 					location.href = "/admin/notice";
 				}
 			}

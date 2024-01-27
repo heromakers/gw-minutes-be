@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.heromakers.app.frenz.mapper.AccountMapper">
+<mapper namespace="com.heromakers.app.minutes.mapper.AccountMapper">
     <resultMap id="AccountMap" type="AccountModel">
         <result property="accountId" column="account_id" />
         <result property="joinType" column="join_type" />
