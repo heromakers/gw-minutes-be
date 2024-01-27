@@ -10,7 +10,7 @@ type FileModel {
 
 input FileParam {
     fileId : Int
-    linkInfo : String!
+    linkInfo : String
     linkKey : Int
     realName : String
     fileUrl : String
