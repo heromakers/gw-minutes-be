@@ -44,8 +44,10 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	testImplementation 'org.springframework:spring-webflux'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 	testImplementation 'org.springframework.graphql:spring-graphql-test'
+//	testImplementation 'com.graphql-java-kickstart:graphql-spring-boot-starter-test:11.0.0'
 }
 
 tasks.named('bootBuildImage') {

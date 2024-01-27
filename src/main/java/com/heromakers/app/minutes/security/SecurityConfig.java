@@ -74,7 +74,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .requestMatchers(permitAllUrls).permitAll()
+//                                .requestMatchers(permitAllUrls).permitAll()
                                 .requestMatchers("/*/**").permitAll()
                                 .anyRequest().authenticated()
                 )

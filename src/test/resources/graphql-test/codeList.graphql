@@ -1,0 +1,7 @@
+query {
+    codeList {
+        codeId
+        code
+        codeLabel
+    }
+}

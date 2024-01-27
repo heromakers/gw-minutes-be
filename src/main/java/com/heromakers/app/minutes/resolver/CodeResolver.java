@@ -1,28 +1,29 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.heromakers.app.minutes.common.Result;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.CodeModel;
 import com.heromakers.app.minutes.service.CodeService;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 @Slf4j
+@AllArgsConstructor
 public class CodeResolver {
 
-    @Autowired
+//    @Autowired
     private CodeService codeService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
