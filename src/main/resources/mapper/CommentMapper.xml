@@ -3,8 +3,6 @@
 <mapper namespace="com.heromakers.app.frenz.mapper.CommentMapper">
     <resultMap id="CommentMap" type="CommentModel">
         <result property="commentId" column="comment_id" />
-        <result property="parentKind" column="parent_kind" />
-        <result property="parentKindTitle" column="parentKindTitle" />
         <result property="parentId" column="parent_id" />
         <result property="precedingId" column="preceding_id" />
         <result property="writerId" column="writer_id" />
@@ -21,9 +19,6 @@
         WHERE 1 = 1
         <if test="useFlag != null and useFlag != ''">
             AND cmt.use_fg = #{useFlag}
-        </if>
-        <if test="parentKind != null and parentKind != ''">
-            AND cmt.parent_kind = #{parentKind}
         </if>
         <if test="parentId != null and parentId != ''">
             AND cmt.parent_id = #{parentId}
@@ -44,11 +39,9 @@
 
     <select id="queryList" parameterType="java.util.Map" resultMap="CommentMap">
         SELECT cmt.*
-            ,cod.code_label AS parentKindTitle
             ,acnt.account_key
             ,acnt.human_name
         FROM tb_comment cmt
-        LEFT JOIN tb_code cod ON cod.p_code = 'COMMENT_PARENT' and cod.code = cmt.parent_kind
         LEFT JOIN tb_account acnt ON acnt.account_id = cmt.writer_id
         <include refid="whereParams"/>
         ORDER BY cmt.comment_id DESC
@@ -65,18 +58,15 @@
 
     <select id="selectOne" parameterType="int" resultMap="CommentMap">
         SELECT cmt.*
-            ,cod.code_label AS parentKindTitle
             ,acnt.account_key
             ,acnt.human_name
         FROM tb_comment cmt
-        LEFT JOIN tb_code cod ON cod.p_code = 'COMMENT_PARENT' and cod.code = cmt.parent_kind
         LEFT JOIN tb_account acnt ON acnt.account_id = cmt.writer_id
         WHERE comment_id = #{commentId}
     </select>
 
     <insert id="insert" parameterType="CommentModel" useGeneratedKeys="true" keyProperty="commentId">
         INSERT INTO tb_comment (
-        parent_kind
         ,parent_id
         ,preceding_id
         ,writer_id
@@ -85,8 +75,7 @@
         ,created_at
         ,updated_at
         ) VALUES (
-        #{parentKind}
-        ,#{parentId}
+        #{parentId}
         ,#{precedingId}
         ,#{writerId}
         ,#{contents}
