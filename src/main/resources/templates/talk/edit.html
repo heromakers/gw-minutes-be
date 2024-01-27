@@ -46,7 +46,7 @@
 							</div>
 							<label for="writerName" class="col-md-2 form-control-label">작성자</label>
 							<div class="col-md-4">
-								<input class="form-control" type="text" id="writerName" name="writerName" th:value="${talkModel.writerModel.humanName}" />
+								<input class="form-control" type="text" id="writerName" name="writerName" th:value="${talkModel.writer.humanName}" />
 							</div>
 						</div>
 
@@ -128,7 +128,7 @@
 					$("#talkKind").val(talkModel.talkKind);
 					$("#title").val(talkModel.title);
 					$("#writerId").val(talkModel.writerId);
-					$("#writerName").val(talkModel.writerModel.humanName);
+					$("#writerName").val(talkModel.writer.humanName);
 					$("#contents").val(talkModel.contents);
 				}
 			}

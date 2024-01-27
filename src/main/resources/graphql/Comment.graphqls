@@ -3,7 +3,7 @@ type CommentModel {
     parentId : Int
     precedingId : Int
     writerId : Int
-    writerModel : AccountModel
+    writer : AccountModel
     contents : String
     useFlag : Boolean
     createdAt : String

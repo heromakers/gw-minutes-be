@@ -7,8 +7,8 @@
         <result property="precedingId" column="preceding_id" />
         <result property="writerId" column="writer_id" />
         <result property="writerName" column="human_name" />
-        <result property="writerModel.accountKey" column="account_key" />
-        <result property="writerModel.humanName" column="human_name" />
+        <result property="writer.accountKey" column="account_key" />
+        <result property="writer.humanName" column="human_name" />
         <result property="contents" column="contents" />
         <result property="useFlag" column="use_fg" />
         <result property="createdAt" column="created_at" />

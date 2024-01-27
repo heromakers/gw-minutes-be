@@ -4,7 +4,7 @@ type TalkModel {
     talkKind : String
     talkKindTitle : String
     writerId : Int
-    writerModel : AccountModel
+    writer : AccountModel
     contents : String
     readCount : Int
     mainImage : FileModel

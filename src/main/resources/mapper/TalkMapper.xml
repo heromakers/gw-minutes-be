@@ -7,8 +7,8 @@
         <result property="talkKindTitle" column="talkKindTitle" />
         <result property="writerId" column="writer_id" />
         <result property="writerName" column="human_name" />
-        <result property="writerModel.accountKey" column="account_key" />
-        <result property="writerModel.humanName" column="human_name" />
+        <result property="writer.accountKey" column="account_key" />
+        <result property="writer.humanName" column="human_name" />
         <result property="title" column="title" />
         <result property="contents" column="contents" />
         <result property="mainImage.fileUrl" column="file_url" />
