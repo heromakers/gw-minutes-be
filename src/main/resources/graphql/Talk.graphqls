@@ -27,7 +27,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertTalk(talkParam: TalkParam!): Result
-    updateTalk(talkId: Int!, talkParam: TalkParam!): Result
-    deleteTalk(talkId: Int!): Result
+    insertTalk(talkParam: TalkParam!): ApiResult
+    updateTalk(talkId: Int!, talkParam: TalkParam!): ApiResult
+    deleteTalk(talkId: Int!): ApiResult
 }

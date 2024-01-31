@@ -3,8 +3,8 @@ type NoticeModel {
     title : String!
     noticeKind : String
     noticeKindTitle : String
-    writer : String
     writerId : Int
+    writerName : String
     contents : String
     readCount : Int
     mainImage : FileModel
@@ -16,12 +16,10 @@ type NoticeModel {
 input NoticeParam {
     title : String
     noticeKind : String
-    writer : String
     writerId : Int
+    writerName : String
     contents : String
     mainImage : FileParam
-#    fileRealName : String
-#    base64String : String
 }
 
 extend type Query {
@@ -30,7 +28,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertNotice(noticeParam: NoticeParam!): Result
-    updateNotice(noticeId: Int!, noticeParam: NoticeParam!): Result
-    deleteNotice(noticeId: Int!): Result
+    insertNotice(noticeParam: NoticeParam!): ApiResult
+    updateNotice(noticeId: Int!, noticeParam: NoticeParam!): ApiResult
+    deleteNotice(noticeId: Int!): ApiResult
 }

@@ -44,9 +44,9 @@
 							<div class="col-md-4">
 								<input class="form-control" type="text" id="writerId" name="writerId" th:value="${noticeModel.writerId}" />
 							</div>
-							<label for="writer" class="col-md-2 form-control-label">작성자</label>
+							<label for="writerName" class="col-md-2 form-control-label">작성자</label>
 							<div class="col-md-4">
-								<input class="form-control" type="text" id="writer" name="writer" th:value="${noticeModel.writer}" />
+								<input class="form-control" type="text" id="writerName" name="writerName" th:value="${noticeModel.writerName}" />
 							</div>
 						</div>
 
@@ -128,7 +128,7 @@
 					$("#noticeKind").val(noticeModel.noticeKind);
 					$("#title").val(noticeModel.title);
 					$("#writerId").val(noticeModel.writerId);
-					$("#writer").val(noticeModel.writer);
+					$("#writerName").val(noticeModel.writerName);
 					$("#contents").val(noticeModel.contents);
 				}
 			}
@@ -152,7 +152,7 @@
 		noticeModel.noticeKind = $("#noticeKind").val();
 		noticeModel.title = $("#title").val();
 		noticeModel.writerId = $("#writerId").val();
-		noticeModel.writer = $("#writer").val();
+		noticeModel.writerName = $("#writerName").val();
 		noticeModel.contents = $("#contents").val();
 
 		let mainImageElement = jQuery("#mainImageArea img");

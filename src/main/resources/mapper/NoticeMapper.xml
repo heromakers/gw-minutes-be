@@ -5,8 +5,8 @@
         <result property="noticeId" column="notice_id" />
         <result property="noticeKind" column="notice_kind" />
         <result property="noticeKindTitle" column="noticeKindTitle" />
-        <result property="writer" column="writer" />
         <result property="writerId" column="writer_id" />
+        <result property="writerName" column="writer_name" />
         <result property="title" column="title" />
         <result property="contents" column="contents" />
         <result property="mainImage.fileUrl" column="file_url" />
@@ -29,9 +29,9 @@
         </if>
         <if test="schTxt != null and schTxt != ''">
             AND (
-            ( ntc.title    LIKE concat('%', #{schTxt}, '%') ) OR
-            ( ntc.writer   LIKE concat('%', #{schTxt}, '%') ) OR
-            ( ntc.contents LIKE concat('%', #{schTxt}, '%') )
+            ( ntc.title       LIKE concat('%', #{schTxt}, '%') ) OR
+            ( ntc.writer_name LIKE concat('%', #{schTxt}, '%') ) OR
+            ( ntc.contents    LIKE concat('%', #{schTxt}, '%') )
             )
         </if>
     </sql>
@@ -70,7 +70,7 @@
         INSERT INTO tb_notice (
         notice_kind
         ,writer_id
-        ,writer
+        ,writer_name
         ,title
         ,contents
         ,read_count
@@ -80,7 +80,7 @@
         ) VALUES (
         #{noticeKind}
         ,#{writerId}
-        ,#{writer}
+        ,#{writerName}
         ,#{title}
         ,#{contents}
         ,0
@@ -99,11 +99,11 @@
         <if test="noticeKind != null and noticeKind != ''">
             ,notice_kind = #{noticeKind}
         </if>
-        <if test="writer != null and writer != ''">
-            ,writer = #{writer}
-        </if>
         <if test="writerId != null and writerId != ''">
             ,writer_id = #{writerId}
+        </if>
+        <if test="writerName != null and writerName != ''">
+            ,writer_name = #{writerName}
         </if>
         <if test="title != null and title != ''">
             ,title = #{title}

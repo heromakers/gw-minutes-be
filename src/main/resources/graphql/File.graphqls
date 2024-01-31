@@ -24,6 +24,6 @@ extend type Query {
 }
 
 extend type Mutation {
-    uploadFile(fileParam: FileParam!): Result
-    deleteFile(fileId: Int!): Result
+    uploadFile(fileParam: FileParam!): ApiResult
+    deleteFile(fileId: Int!): ApiResult
 }

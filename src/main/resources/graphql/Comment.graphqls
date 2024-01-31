@@ -23,7 +23,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertComment(commentParam: CommentParam!): Result
-    updateComment(commentId: Int!, commentParam: CommentParam!): Result
-    deleteComment(commentId: Int!): Result
+    insertComment(commentParam: CommentParam!): ApiResult
+    updateComment(commentId: Int!, commentParam: CommentParam!): ApiResult
+    deleteComment(commentId: Int!): ApiResult
 }

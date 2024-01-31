@@ -25,7 +25,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertCode(codeParam: CodeParam!): Result
-    updateCode(codeId: Int!, codeParam: CodeParam!): Result
-    deleteCode(codeId: Int!): Result
+    insertCode(codeParam: CodeParam!): ApiResult
+    updateCode(codeId: Int!, codeParam: CodeParam!): ApiResult
+    deleteCode(codeId: Int!): ApiResult
 }
