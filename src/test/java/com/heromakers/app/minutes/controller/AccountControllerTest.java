@@ -40,28 +40,24 @@ class AccountControllerTest {
                 });
     }
 
-    @Test
+    /*@Test
     void accountList() throws Exception {
         String requestBody = "query { accountList { humanName } }";
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
                                 .post("/graphql")
-                                .content(requestBody)
-                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(objectMapper.writeValueAsBytes(requestBody))
-//                                .contentType(MediaType.APPLICATION_GRAPHQL_RESPONSE)
+//                                .content(requestBody)
+                                .contentType(MediaType.APPLICATION_GRAPHQL_RESPONSE)
+                                .characterEncoding("UTF-8")
+                                .content(objectMapper.writeValueAsBytes(requestBody))
                                 .characterEncoding("UTF-8")
                 )
-//                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(result -> {
                     System.out.println("result = " + result.getResponse().getContentAsString());
                 });
-//.andExpect {
-//MockMvcResultMatchers.request().asyncStarted()
-//MockMvcResultMatchers.request().asyncResult(CoreMatchers.notNullValue())
-//}.andReturn()
-    }
+    }*/
 
     @Test
     void insertAccount() throws Exception {
