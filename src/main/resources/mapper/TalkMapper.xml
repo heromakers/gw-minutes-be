@@ -43,7 +43,7 @@
 
     <select id="queryList" parameterType="java.util.Map" resultMap="TalkMap">
         SELECT tok.*
-            ,cod.code_label AS talkKindTitle
+            ,IFNULL(cod.code_label, tok.talk_kind) AS talkKindTitle
             ,acnt.account_key
             ,acnt.human_name
             ,fle.file_url
