@@ -36,7 +36,7 @@ public class AccountResolver {
 
         Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(useFlag != null) param.put("useFlag", useFlag);
+        if(useFlag != null) param.put("useFlag", useFlag ? 1 : 0);
         if(accountParam != null) {
             String humanName = accountParam.getHumanName();
             if(humanName != null && !humanName.isEmpty()) param.put("humanName", humanName);

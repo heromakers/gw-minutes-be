@@ -19,8 +19,13 @@ public class TalkController {
     private TalkService talkService;
 
     @GetMapping
-    public ApiResult getTalkList(@RequestParam Map param) {
+    public ApiResult getTalkList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
+        String useFlag = param.get("useFlag");
+        if(useFlag != null) {
+            if("true".equalsIgnoreCase(useFlag)) param.put("useFlag", "1");
+            else if("false".equalsIgnoreCase(useFlag)) param.put("useFlag", "0");
+        }
         List<TalkModel> talkList = talkService.getTalkList(param);
         result.setData(talkList);
         return result;

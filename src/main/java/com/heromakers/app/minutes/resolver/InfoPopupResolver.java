@@ -31,7 +31,7 @@ public class InfoPopupResolver {
         Map<String, Object> param = new HashMap<>();
         if(isActive != null && !isActive.isEmpty()) param.put("isActive", isActive);
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(showFlag != null) param.put("showFlag", showFlag);
+        if(showFlag != null) param.put("showFlag", showFlag ? 1 : 0);
         if(infoPopupParam != null) {
             String kind = infoPopupParam.getKind();
             if(kind != null && !kind.isEmpty()) param.put("kind", kind);

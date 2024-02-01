@@ -19,8 +19,13 @@ public class InfoPopupController {
     private InfoPopupService infoPopupService;
 
     @GetMapping
-    public ApiResult getInfoPopupList(@RequestParam Map param) {
+    public ApiResult getInfoPopupList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
+        String useFlag = param.get("useFlag");
+        if(useFlag != null) {
+            if("true".equalsIgnoreCase(useFlag)) param.put("useFlag", "1");
+            else if("false".equalsIgnoreCase(useFlag)) param.put("useFlag", "0");
+        }
         List<InfoPopupModel> popupList = infoPopupService.getInfoPopupList(param);
         result.setData(popupList);
         return result;

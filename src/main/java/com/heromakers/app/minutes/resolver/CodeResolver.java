@@ -31,7 +31,7 @@ public class CodeResolver {
     public List<CodeModel> codeList(@Argument String schTxt, @Argument Boolean useFlag, @Argument CodeModel codeParam) {
         Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(useFlag != null) param.put("useFlag", useFlag);
+        if(useFlag != null) param.put("useFlag", useFlag ? 1 : 0);
         if(codeParam != null) {
             String parentCode = codeParam.getParentCode();
             if(parentCode != null && !parentCode.isEmpty()) param.put("parentCode", parentCode);

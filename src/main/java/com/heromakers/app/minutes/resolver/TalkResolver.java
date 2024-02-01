@@ -30,7 +30,7 @@ public class TalkResolver {
     public List<TalkModel> talkList(@Argument String schTxt, @Argument Boolean useFlag, @Argument TalkModel talkParam) {
         Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(useFlag != null) param.put("useFlag", useFlag);
+        if(useFlag != null) param.put("useFlag", useFlag ? 1 : 0);
         if(talkParam != null) {
             String talkKind = talkParam.getTalkKind();
             if(talkKind != null && !talkKind.isEmpty()) param.put("talkKind", talkKind);

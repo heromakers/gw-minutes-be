@@ -19,8 +19,13 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping
-    public ApiResult getAccountList(@RequestParam Map param) {
+    public ApiResult getAccountList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
+        String useFlag = param.get("useFlag");
+        if(useFlag != null) {
+            if("true".equalsIgnoreCase(useFlag)) param.put("useFlag", "1");
+            else if("false".equalsIgnoreCase(useFlag)) param.put("useFlag", "0");
+        }
         List<AccountModel> accountList = accountService.getAccountList(param);
         result.setData(accountList);
         return result;

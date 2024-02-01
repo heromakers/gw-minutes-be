@@ -30,7 +30,7 @@ public class NoticeResolver {
     public List<NoticeModel> noticeList(@Argument String schTxt, @Argument Boolean useFlag, @Argument NoticeModel noticeParam) {
         Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(useFlag != null) param.put("useFlag", useFlag);
+        if(useFlag != null) param.put("useFlag", useFlag ? 1 : 0);
         if(noticeParam != null) {
             String noticeKind = noticeParam.getNoticeKind();
             if(noticeKind != null && !noticeKind.isEmpty()) param.put("noticeKind", noticeKind);

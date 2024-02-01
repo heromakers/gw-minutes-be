@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InfoPopupMapper extends BaseMapper<InfoPopupModel, Integer> {
-    public InfoPopupModel getActiveOne ();
+    public InfoPopupModel selectActiveOne();
 }

@@ -30,7 +30,7 @@ public class CommentResolver {
     public List<CommentModel> commentList(@Argument String schTxt, @Argument Boolean useFlag, @Argument CommentModel commentParam) {
         Map<String, Object> param = new HashMap<>();
         if(schTxt != null && !schTxt.isEmpty()) param.put("schTxt", schTxt);
-        if(useFlag != null) param.put("useFlag", useFlag);
+        if(useFlag != null) param.put("useFlag", useFlag ? 1 : 0);
         if(commentParam != null) {
             Integer parentId = commentParam.getParentId();
             if(parentId != null) param.put("parentId", parentId);

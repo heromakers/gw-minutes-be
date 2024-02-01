@@ -19,8 +19,13 @@ public class CodeController {
     private CodeService codeService;
 
     @GetMapping
-    public ApiResult getCodeList(@RequestParam Map param) {
+    public ApiResult getCodeList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
+        String useFlag = param.get("useFlag");
+        if(useFlag != null) {
+            if("true".equalsIgnoreCase(useFlag)) param.put("useFlag", "1");
+            else if("false".equalsIgnoreCase(useFlag)) param.put("useFlag", "0");
+        }
         List<CodeModel> codeList = codeService.getCodeList(param);
         result.setData(codeList);
         return result;

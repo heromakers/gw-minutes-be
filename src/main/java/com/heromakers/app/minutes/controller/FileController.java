@@ -20,7 +20,7 @@ public class FileController {
     private FileService fileService;
 
     @GetMapping
-    public ApiResult getFileList(@RequestParam Map param) {
+    public ApiResult getFileList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
         List<FileModel> fileList = fileService.getFileList(param);
         result.setData(fileList);

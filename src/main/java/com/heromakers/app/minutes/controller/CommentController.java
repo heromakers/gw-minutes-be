@@ -19,8 +19,13 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping
-    public ApiResult getCommentList(@RequestParam Map param) {
+    public ApiResult getCommentList(@RequestParam Map<String, String> param) {
         ApiResult result = new ApiResult();
+        String useFlag = param.get("useFlag");
+        if(useFlag != null) {
+            if("true".equalsIgnoreCase(useFlag)) param.put("useFlag", "1");
+            else if("false".equalsIgnoreCase(useFlag)) param.put("useFlag", "0");
+        }
         List<CommentModel> commentList = commentService.getCommentList(param);
         result.setData(commentList);
         return result;
