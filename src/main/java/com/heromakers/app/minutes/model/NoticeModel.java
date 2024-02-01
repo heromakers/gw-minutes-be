@@ -32,8 +32,8 @@ public class NoticeModel implements Serializable{
     @Column(name = "writer_id")
     private Integer writerId;
 
-    @Column(name = "writer")
-    private String writer;
+    @Column(name = "writer_name")
+    private String writerName;
 
     @Column(name = "title")
     private String title;

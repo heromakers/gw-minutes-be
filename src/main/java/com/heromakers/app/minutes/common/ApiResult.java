@@ -3,7 +3,7 @@ package com.heromakers.app.minutes.common;
 import lombok.Data;
 
 @Data
-public class Result {
+public class ApiResult {
     private ResultStatus status = ResultStatus.success;
 
     private String reason;

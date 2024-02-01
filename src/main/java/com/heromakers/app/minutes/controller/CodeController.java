@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.CodeModel;
 import com.heromakers.app.minutes.service.CodeService;
@@ -19,16 +19,16 @@ public class CodeController {
     private CodeService codeService;
 
     @GetMapping
-    public Result getCodeList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getCodeList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<CodeModel> codeList = codeService.getCodeList(param);
         result.setData(codeList);
         return result;
     }
 
     @GetMapping("/{codeId}")
-    public Result getCodeInfo(@PathVariable("codeId") Integer codeId) {
-        Result result = new Result();
+    public ApiResult getCodeInfo(@PathVariable("codeId") Integer codeId) {
+        ApiResult result = new ApiResult();
         CodeModel codeModel = codeService.getCodeInfo(codeId);
         if(codeModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class CodeController {
     }
 
     @PostMapping
-    public Result insertCode(@RequestBody CodeModel codeParam) {
-        Result result = new Result();
+    public ApiResult insertCode(@RequestBody CodeModel codeParam) {
+        ApiResult result = new ApiResult();
         CodeModel saved = codeService.insertCode(codeParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -53,8 +53,8 @@ public class CodeController {
     }
 
     @PutMapping
-    public Result updateCode(@RequestBody CodeModel codeParam) {
-        Result result = new Result();
+    public ApiResult updateCode(@RequestBody CodeModel codeParam) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = codeService.updateCode(codeParam);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);
@@ -64,8 +64,8 @@ public class CodeController {
     }
 
     @DeleteMapping("/{codeId}")
-    public Result deleteCode(@PathVariable("codeId") Integer codeId) {
-        Result result = new Result();
+    public ApiResult deleteCode(@PathVariable("codeId") Integer codeId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = codeService.deleteCode(codeId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

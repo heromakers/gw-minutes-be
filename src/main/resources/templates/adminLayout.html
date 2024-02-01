@@ -118,7 +118,7 @@
 
     jQuery(document).ready(function() {
         // let token = "[[${session.authToken}]]";
-        let authToken = localStorage.getItem("frenz-authToken");
+        let authToken = localStorage.getItem("minutes-authToken");
         if(authToken) {
             $.ajaxSetup({ headers: { "X-AUTH-TOKEN": authToken } });
         } else {

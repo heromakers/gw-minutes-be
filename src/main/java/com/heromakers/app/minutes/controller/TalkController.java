@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.TalkModel;
 import com.heromakers.app.minutes.service.TalkService;
@@ -19,16 +19,16 @@ public class TalkController {
     private TalkService talkService;
 
     @GetMapping
-    public Result getTalkList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getTalkList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<TalkModel> talkList = talkService.getTalkList(param);
         result.setData(talkList);
         return result;
     }
 
     @GetMapping("/{talkId}")
-    public Result getTalkInfo(@PathVariable("talkId") Integer talkId) {
-        Result result = new Result();
+    public ApiResult getTalkInfo(@PathVariable("talkId") Integer talkId) {
+        ApiResult result = new ApiResult();
         TalkModel talkModel = talkService.getTalkInfo(talkId);
         if(talkModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class TalkController {
     }
 
     @PostMapping
-    public Result insertTalk(@RequestBody TalkModel talkParam) {
-        Result result = new Result();
+    public ApiResult insertTalk(@RequestBody TalkModel talkParam) {
+        ApiResult result = new ApiResult();
         TalkModel saved = talkService.insertTalk(talkParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -53,8 +53,8 @@ public class TalkController {
     }
 
     @PutMapping
-    public Result updateTalk(@RequestBody TalkModel talkParam) {
-        Result result = new Result();
+    public ApiResult updateTalk(@RequestBody TalkModel talkParam) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = talkService.updateTalk(talkParam);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);
@@ -64,8 +64,8 @@ public class TalkController {
     }
 
     @DeleteMapping("/{talkId}")
-    public Result deleteTalk(@PathVariable("talkId") Integer talkId) {
-        Result result = new Result();
+    public ApiResult deleteTalk(@PathVariable("talkId") Integer talkId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = talkService.deleteTalk(talkId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

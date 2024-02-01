@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.AccountModel;
 import com.heromakers.app.minutes.service.AccountService;
@@ -19,8 +19,8 @@ public class UserController {
     private AccountService accountService;
 
     @PutMapping("/my-info")
-    public Result updateAccount(@AuthenticationPrincipal UserDetails details, @RequestBody AccountModel accountParam) {
-        Result result = new Result();
+    public ApiResult updateAccount(@AuthenticationPrincipal UserDetails details, @RequestBody AccountModel accountParam) {
+        ApiResult result = new ApiResult();
         AccountModel loginedUser = (AccountModel)details;
         accountParam.setAccountId(loginedUser.getAccountId());
         boolean isSuccess = accountService.updateAccount(accountParam);
@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @PutMapping("/reset-password")
-    public Result resetPassword(@AuthenticationPrincipal UserDetails details, @RequestBody String password) {
-        Result result = new Result();
+    public ApiResult resetPassword(@AuthenticationPrincipal UserDetails details, @RequestBody String password) {
+        ApiResult result = new ApiResult();
         try {
             AccountModel loginedUser = (AccountModel)details;
             if (password == null || password.length() < 4) {
@@ -62,8 +62,8 @@ public class UserController {
 
     @PutMapping("/fcm-token")
     @ApiOperation(value = "fcm-token 수정", notes = "fcm 메세지 수신을 위한 token 수정")
-    public Result updateFcmToken(@AuthenticationPrincipal UserDetails details, @RequestBody String fcmToken) {
-        Result result = new Result();
+    public ApiResult updateFcmToken(@AuthenticationPrincipal UserDetails details, @RequestBody String fcmToken) {
+        ApiResult result = new ApiResult();
         AccountModel loginedUser = (AccountModel)details;
         boolean isSuccess = accountService.updateFcmToken(loginedUser.getAccountId(), fcmToken);
         if(!isSuccess) {
@@ -74,8 +74,8 @@ public class UserController {
     }
 
     @DeleteMapping("/leave")
-    public Result leave(@AuthenticationPrincipal UserDetails details, @RequestBody String reason) {
-        Result result = new Result();
+    public ApiResult leave(@AuthenticationPrincipal UserDetails details, @RequestBody String reason) {
+        ApiResult result = new ApiResult();
         AccountModel loginedUser = (AccountModel)details;
         boolean isSuccess = accountService.leave(loginedUser.getAccountId(), reason);
         if(!isSuccess) {

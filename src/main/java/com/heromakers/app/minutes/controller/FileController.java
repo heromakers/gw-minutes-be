@@ -1,7 +1,7 @@
 package com.heromakers.app.minutes.controller;
 
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.FileModel;
 import com.heromakers.app.minutes.service.FileService;
@@ -20,16 +20,16 @@ public class FileController {
     private FileService fileService;
 
     @GetMapping
-    public Result getFileList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getFileList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<FileModel> fileList = fileService.getFileList(param);
         result.setData(fileList);
         return result;
     }
 
     @GetMapping("/{fileId}")
-    public Result getFileInfo(@PathVariable("fileId") Integer fileId) {
-        Result result = new Result();
+    public ApiResult getFileInfo(@PathVariable("fileId") Integer fileId) {
+        ApiResult result = new ApiResult();
         FileModel fileModel = fileService.getFileInfo(fileId);
         if(fileModel == null){
             result.setStatus(ResultStatus.fail);
@@ -41,8 +41,8 @@ public class FileController {
     }
 
     @PostMapping
-    public Result uploadFile(@RequestBody FileModel fileParam) {
-        Result result = new Result();
+    public ApiResult uploadFile(@RequestBody FileModel fileParam) {
+        ApiResult result = new ApiResult();
         FileModel saved = fileService.uploadS3File(fileParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -54,8 +54,8 @@ public class FileController {
     }
 
     @DeleteMapping("/{fileId}")
-    public Result deleteFile(@PathVariable("fileId") Integer fileId) {
-        Result result = new Result();
+    public ApiResult deleteFile(@PathVariable("fileId") Integer fileId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = fileService.deleteFile(fileId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

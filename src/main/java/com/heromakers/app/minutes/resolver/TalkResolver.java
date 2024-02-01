@@ -1,9 +1,8 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.TalkModel;
 import com.heromakers.app.minutes.service.TalkService;
@@ -49,8 +48,8 @@ public class TalkResolver {
     }
 
     @MutationMapping
-    public Result insertTalk(@Argument TalkModel talkParam) {
-        Result result = new Result();
+    public ApiResult insertTalk(@Argument TalkModel talkParam) {
+        ApiResult result = new ApiResult();
         try {
             TalkModel saved = talkService.insertTalk(talkParam);
             if(saved == null) {
@@ -69,8 +68,8 @@ public class TalkResolver {
     }
 
     @MutationMapping
-    public Result updateTalk(@Argument Integer talkId, @Argument TalkModel talkParam) {
-        Result result = new Result();
+    public ApiResult updateTalk(@Argument Integer talkId, @Argument TalkModel talkParam) {
+        ApiResult result = new ApiResult();
         talkParam.setTalkId(talkId);
         boolean isSuccess = talkService.updateTalk(talkParam);
         if(!isSuccess) {
@@ -83,8 +82,8 @@ public class TalkResolver {
     }
 
     @MutationMapping
-    public Result deleteTalk(@Argument Integer talkId) {
-        Result result = new Result();
+    public ApiResult deleteTalk(@Argument Integer talkId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = talkService.deleteTalk(talkId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

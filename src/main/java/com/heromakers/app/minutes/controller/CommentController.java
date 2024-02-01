@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.CommentModel;
 import com.heromakers.app.minutes.service.CommentService;
@@ -19,16 +19,16 @@ public class CommentController {
     private CommentService commentService;
 
     @GetMapping
-    public Result getCommentList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getCommentList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<CommentModel> commentList = commentService.getCommentList(param);
         result.setData(commentList);
         return result;
     }
 
     @GetMapping("/{commentId}")
-    public Result getCommentInfo(@PathVariable("commentId") Integer commentId) {
-        Result result = new Result();
+    public ApiResult getCommentInfo(@PathVariable("commentId") Integer commentId) {
+        ApiResult result = new ApiResult();
         CommentModel commentModel = commentService.getCommentInfo(commentId);
         if(commentModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class CommentController {
     }
 
     @PostMapping
-    public Result insertComment(@RequestBody CommentModel commentParam) {
-        Result result = new Result();
+    public ApiResult insertComment(@RequestBody CommentModel commentParam) {
+        ApiResult result = new ApiResult();
         CommentModel saved = commentService.insertComment(commentParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -53,8 +53,8 @@ public class CommentController {
     }
 
     @PutMapping
-    public Result updateComment(@RequestBody CommentModel commentParam) {
-        Result result = new Result();
+    public ApiResult updateComment(@RequestBody CommentModel commentParam) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = commentService.updateComment(commentParam);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);
@@ -64,8 +64,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public Result deleteComment(@PathVariable("commentId") Integer commentId) {
-        Result result = new Result();
+    public ApiResult deleteComment(@PathVariable("commentId") Integer commentId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = commentService.deleteComment(commentId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

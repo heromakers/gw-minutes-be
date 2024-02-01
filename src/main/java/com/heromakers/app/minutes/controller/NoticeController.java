@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.NoticeModel;
 import com.heromakers.app.minutes.service.NoticeService;
@@ -19,16 +19,16 @@ public class NoticeController {
     private NoticeService noticeService;
 
     @GetMapping
-    public Result getNoticeList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getNoticeList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<NoticeModel> noticeList = noticeService.getNoticeList(param);
         result.setData(noticeList);
         return result;
     }
 
     @GetMapping("/{noticeId}")
-    public Result getNoticeInfo(@PathVariable("noticeId") Integer noticeId) {
-        Result result = new Result();
+    public ApiResult getNoticeInfo(@PathVariable("noticeId") Integer noticeId) {
+        ApiResult result = new ApiResult();
         NoticeModel noticeModel = noticeService.getNoticeInfo(noticeId);
         if(noticeModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class NoticeController {
     }
 
     @PostMapping
-    public Result insertNotice(@RequestBody NoticeModel noticeParam) {
-        Result result = new Result();
+    public ApiResult insertNotice(@RequestBody NoticeModel noticeParam) {
+        ApiResult result = new ApiResult();
         NoticeModel saved = noticeService.insertNotice(noticeParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -53,8 +53,8 @@ public class NoticeController {
     }
 
     @PutMapping
-    public Result updateNotice(@RequestBody NoticeModel noticeParam) {
-        Result result = new Result();
+    public ApiResult updateNotice(@RequestBody NoticeModel noticeParam) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = noticeService.updateNotice(noticeParam);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);
@@ -64,8 +64,8 @@ public class NoticeController {
     }
 
     @DeleteMapping("/{noticeId}")
-    public Result deleteNotice(@PathVariable("noticeId") Integer noticeId) {
-        Result result = new Result();
+    public ApiResult deleteNotice(@PathVariable("noticeId") Integer noticeId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = noticeService.deleteNotice(noticeId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

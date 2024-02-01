@@ -1,9 +1,8 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.FileModel;
 import com.heromakers.app.minutes.service.FileService;
@@ -45,8 +44,8 @@ public class FileResolver {
     }
 
     @MutationMapping
-    public Result uploadFile(@Argument FileModel fileParam) {
-        Result result = new Result();
+    public ApiResult uploadFile(@Argument FileModel fileParam) {
+        ApiResult result = new ApiResult();
         try {
             FileModel saved = fileService.uploadS3File(fileParam);
             if(saved == null) {
@@ -65,8 +64,8 @@ public class FileResolver {
     }
 
     @MutationMapping
-    public Result deleteFile(@Argument Integer fileId) {
-        Result result = new Result();
+    public ApiResult deleteFile(@Argument Integer fileId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = fileService.deleteFile(fileId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

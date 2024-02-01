@@ -1,9 +1,8 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.InfoPopupModel;
 import com.heromakers.app.minutes.service.InfoPopupService;
@@ -48,8 +47,8 @@ public class InfoPopupResolver {
     }
 
     @MutationMapping
-    public Result insertInfoPopup(@Argument InfoPopupModel infoPopupParam) {
-        Result result = new Result();
+    public ApiResult insertInfoPopup(@Argument InfoPopupModel infoPopupParam) {
+        ApiResult result = new ApiResult();
         try {
             InfoPopupModel saved = infoPopupService.insertInfoPopup(infoPopupParam);
             if(saved == null) {
@@ -68,8 +67,8 @@ public class InfoPopupResolver {
     }
 
     @MutationMapping
-    public Result updateInfoPopup(@Argument Integer seq, @Argument InfoPopupModel infoPopupParam) {
-        Result result = new Result();
+    public ApiResult updateInfoPopup(@Argument Integer seq, @Argument InfoPopupModel infoPopupParam) {
+        ApiResult result = new ApiResult();
         infoPopupParam.setSeq(seq);
         boolean isSuccess = infoPopupService.updateInfoPopup(infoPopupParam);
         if(!isSuccess) {
@@ -82,8 +81,8 @@ public class InfoPopupResolver {
     }
 
     @MutationMapping
-    public Result deleteInfoPopup(@Argument Integer seq) {
-        Result result = new Result();
+    public ApiResult deleteInfoPopup(@Argument Integer seq) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = infoPopupService.deleteInfoPopup(seq);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

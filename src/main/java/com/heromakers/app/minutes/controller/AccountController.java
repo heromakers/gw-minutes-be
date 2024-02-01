@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.AccountModel;
 import com.heromakers.app.minutes.service.AccountService;
@@ -19,16 +19,16 @@ public class AccountController {
     private AccountService accountService;
 
     @GetMapping
-    public Result getAccountList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getAccountList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<AccountModel> accountList = accountService.getAccountList(param);
         result.setData(accountList);
         return result;
     }
 
     @GetMapping("/{accountId}")
-    public Result getAccountInfo(@PathVariable("accountId") Integer accountId) {
-        Result result = new Result();
+    public ApiResult getAccountInfo(@PathVariable("accountId") Integer accountId) {
+        ApiResult result = new ApiResult();
         AccountModel accountModel = accountService.getAccountInfo(accountId);
         if(accountModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class AccountController {
     }
 
     @PostMapping
-    public Result insertAccount(@RequestBody AccountModel accountParam) {
-        Result result = new Result();
+    public ApiResult insertAccount(@RequestBody AccountModel accountParam) {
+        ApiResult result = new ApiResult();
         try {
             AccountModel saved = accountService.insertAccount(accountParam);
             if(saved == null) {
@@ -59,8 +59,8 @@ public class AccountController {
     }
 
     @PutMapping
-    public Result updateAccount(@RequestBody AccountModel accountParam) {
-        Result result = new Result();
+    public ApiResult updateAccount(@RequestBody AccountModel accountParam) {
+        ApiResult result = new ApiResult();
         try {
             accountService.updateAccount(accountParam);
         } catch (Exception e) {
@@ -72,8 +72,8 @@ public class AccountController {
     }
 
     @DeleteMapping("/{accountId}")
-    public Result deleteAccount(@PathVariable("accountId") Integer accountId) {
-        Result result = new Result();
+    public ApiResult deleteAccount(@PathVariable("accountId") Integer accountId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = accountService.deleteAccount(accountId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

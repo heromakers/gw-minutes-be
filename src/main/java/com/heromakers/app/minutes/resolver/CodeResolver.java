@@ -2,13 +2,12 @@ package com.heromakers.app.minutes.resolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.CodeModel;
 import com.heromakers.app.minutes.service.CodeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -48,8 +47,8 @@ public class CodeResolver {
     }
 
     @MutationMapping
-    public Result insertCode(@Argument CodeModel codeParam) {
-        Result result = new Result();
+    public ApiResult insertCode(@Argument CodeModel codeParam) {
+        ApiResult result = new ApiResult();
         try {
             CodeModel saved = codeService.insertCode(codeParam);
             if(saved == null) {
@@ -68,8 +67,8 @@ public class CodeResolver {
     }
 
     @MutationMapping
-    public Result updateCode(@Argument Integer codeId, @Argument CodeModel codeParam) {
-        Result result = new Result();
+    public ApiResult updateCode(@Argument Integer codeId, @Argument CodeModel codeParam) {
+        ApiResult result = new ApiResult();
         codeParam.setCodeId(codeId);
         boolean isSuccess = codeService.updateCode(codeParam);
         if(!isSuccess) {
@@ -82,8 +81,8 @@ public class CodeResolver {
     }
 
     @MutationMapping
-    public Result deleteCode(@Argument Integer codeId) {
-        Result result = new Result();
+    public ApiResult deleteCode(@Argument Integer codeId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = codeService.deleteCode(codeId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

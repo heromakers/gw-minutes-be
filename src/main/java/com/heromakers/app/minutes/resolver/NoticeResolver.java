@@ -1,9 +1,8 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.NoticeModel;
 import com.heromakers.app.minutes.service.NoticeService;
@@ -47,8 +46,8 @@ public class NoticeResolver {
     }
 
     @MutationMapping
-    public Result insertNotice(@Argument NoticeModel noticeParam) {
-        Result result = new Result();
+    public ApiResult insertNotice(@Argument NoticeModel noticeParam) {
+        ApiResult result = new ApiResult();
         try {
             NoticeModel saved = noticeService.insertNotice(noticeParam);
             if(saved == null) {
@@ -67,8 +66,8 @@ public class NoticeResolver {
     }
 
     @MutationMapping
-    public Result updateNotice(@Argument Integer noticeId, @Argument NoticeModel noticeParam) {
-        Result result = new Result();
+    public ApiResult updateNotice(@Argument Integer noticeId, @Argument NoticeModel noticeParam) {
+        ApiResult result = new ApiResult();
         noticeParam.setNoticeId(noticeId);
         boolean isSuccess = noticeService.updateNotice(noticeParam);
         if(!isSuccess) {
@@ -81,8 +80,8 @@ public class NoticeResolver {
     }
 
     @MutationMapping
-    public Result deleteNotice(@Argument Integer noticeId) {
-        Result result = new Result();
+    public ApiResult deleteNotice(@Argument Integer noticeId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = noticeService.deleteNotice(noticeId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

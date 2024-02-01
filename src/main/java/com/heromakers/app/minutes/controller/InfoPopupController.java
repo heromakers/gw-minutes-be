@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.InfoPopupModel;
 import com.heromakers.app.minutes.service.InfoPopupService;
@@ -19,16 +19,16 @@ public class InfoPopupController {
     private InfoPopupService infoPopupService;
 
     @GetMapping
-    public Result getInfoPopupList(@RequestParam Map param) {
-        Result result = new Result();
+    public ApiResult getInfoPopupList(@RequestParam Map param) {
+        ApiResult result = new ApiResult();
         List<InfoPopupModel> popupList = infoPopupService.getInfoPopupList(param);
         result.setData(popupList);
         return result;
     }
 
     @GetMapping("/{seq}")
-    public Result getInfoPopupInfo(@PathVariable("seq") Integer seq) {
-        Result result = new Result();
+    public ApiResult getInfoPopupInfo(@PathVariable("seq") Integer seq) {
+        ApiResult result = new ApiResult();
         InfoPopupModel popupModel = infoPopupService.getInfoPopupInfo(seq);
         if(popupModel == null) {
             result.setStatus(ResultStatus.fail);
@@ -40,8 +40,8 @@ public class InfoPopupController {
     }
 
     @PostMapping
-    public Result insertInfoPopup(@RequestBody InfoPopupModel popupParam) {
-        Result result = new Result();
+    public ApiResult insertInfoPopup(@RequestBody InfoPopupModel popupParam) {
+        ApiResult result = new ApiResult();
         InfoPopupModel saved = infoPopupService.insertInfoPopup(popupParam);
         if(saved == null) {
             result.setStatus(ResultStatus.fail);
@@ -53,8 +53,8 @@ public class InfoPopupController {
     }
 
     @PutMapping
-    public Result updateInfoPopup(@RequestBody InfoPopupModel popupParam) {
-        Result result = new Result();
+    public ApiResult updateInfoPopup(@RequestBody InfoPopupModel popupParam) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = infoPopupService.updateInfoPopup(popupParam);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);
@@ -64,8 +64,8 @@ public class InfoPopupController {
     }
 
     @DeleteMapping("/{seq}")
-    public Result deleteInfoPopup(@PathVariable("seq") Integer seq) {
-        Result result = new Result();
+    public ApiResult deleteInfoPopup(@PathVariable("seq") Integer seq) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = infoPopupService.deleteInfoPopup(seq);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

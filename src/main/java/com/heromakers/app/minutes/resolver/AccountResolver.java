@@ -2,7 +2,7 @@ package com.heromakers.app.minutes.resolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.AccountModel;
 import com.heromakers.app.minutes.service.AccountService;
@@ -53,8 +53,8 @@ public class AccountResolver {
     }
 
     @MutationMapping
-    public Result insertAccount(@Argument AccountModel accountParam, @Argument String password) {
-        Result result = new Result();
+    public ApiResult insertAccount(@Argument AccountModel accountParam, @Argument String password) {
+        ApiResult result = new ApiResult();
         try {
             accountParam.setPassword(password);
             AccountModel saved = accountService.insertAccount(accountParam);
@@ -75,8 +75,8 @@ public class AccountResolver {
     }
 
     @MutationMapping
-    public Result updateAccount(@Argument Integer accountId, @Argument AccountModel accountParam) {
-        Result result = new Result();
+    public ApiResult updateAccount(@Argument Integer accountId, @Argument AccountModel accountParam) {
+        ApiResult result = new ApiResult();
         accountParam.setAccountId(accountId);
         boolean isSuccess = accountService.updateAccount(accountParam);
         if(!isSuccess) {
@@ -89,8 +89,8 @@ public class AccountResolver {
     }
 
     @MutationMapping
-    public Result deleteAccount(@Argument Integer accountId) {
-        Result result = new Result();
+    public ApiResult deleteAccount(@Argument Integer accountId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = accountService.deleteAccount(accountId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.error);

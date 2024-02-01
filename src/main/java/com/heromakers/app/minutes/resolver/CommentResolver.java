@@ -1,11 +1,9 @@
 package com.heromakers.app.minutes.resolver;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
-import com.heromakers.app.minutes.model.CodeModel;
 import com.heromakers.app.minutes.model.CommentModel;
 import com.heromakers.app.minutes.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,8 +48,8 @@ public class CommentResolver {
     }
 
     @MutationMapping
-    public Result insertComment(@Argument CommentModel commentParam) {
-        Result result = new Result();
+    public ApiResult insertComment(@Argument CommentModel commentParam) {
+        ApiResult result = new ApiResult();
         try {
             CommentModel saved = commentService.insertComment(commentParam);
             if(saved == null) {
@@ -70,8 +68,8 @@ public class CommentResolver {
     }
 
     @MutationMapping
-    public Result updateComment(@Argument Integer commentId, @Argument CommentModel commentParam) {
-        Result result = new Result();
+    public ApiResult updateComment(@Argument Integer commentId, @Argument CommentModel commentParam) {
+        ApiResult result = new ApiResult();
         commentParam.setCommentId(commentId);
         boolean isSuccess = commentService.updateComment(commentParam);
         if(!isSuccess) {
@@ -84,8 +82,8 @@ public class CommentResolver {
     }
 
     @MutationMapping
-    public Result deleteComment(@Argument Integer commentId) {
-        Result result = new Result();
+    public ApiResult deleteComment(@Argument Integer commentId) {
+        ApiResult result = new ApiResult();
         boolean isSuccess = commentService.deleteComment(commentId);
         if(!isSuccess) {
             result.setStatus(ResultStatus.fail);

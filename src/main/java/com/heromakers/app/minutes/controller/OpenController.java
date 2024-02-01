@@ -1,6 +1,6 @@
 package com.heromakers.app.minutes.controller;
 
-import com.heromakers.app.minutes.common.Result;
+import com.heromakers.app.minutes.common.ApiResult;
 import com.heromakers.app.minutes.common.ResultStatus;
 import com.heromakers.app.minutes.model.AccountModel;
 import com.heromakers.app.minutes.security.JwtTokenProvider;
@@ -27,8 +27,8 @@ public class OpenController {
     private JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/login")
-    public Result login(@RequestBody AccountModel accountParam, HttpServletRequestWrapper request) {
-        Result result = new Result();
+    public ApiResult login(@RequestBody AccountModel accountParam, HttpServletRequestWrapper request) {
+        ApiResult result = new ApiResult();
         try {
             String accountKey = accountParam.getAccountKey();
             String password = accountParam.getPassword();
@@ -90,16 +90,16 @@ public class OpenController {
     }
 
     @DeleteMapping("/logout")
-    public Result logout(HttpServletRequestWrapper request) {
-        Result result = new Result();
+    public ApiResult logout(HttpServletRequestWrapper request) {
+        ApiResult result = new ApiResult();
         request.getSession().invalidate();
         result.setMessage("로그아웃 되었습니다.");
         return result;
     }
 
     @PostMapping("/join")
-    public Result join(@RequestBody AccountModel accountParam) {
-        Result result = new Result();
+    public ApiResult join(@RequestBody AccountModel accountParam) {
+        ApiResult result = new ApiResult();
         try {
             String accountKey = accountParam.getAccountKey();
             String password = accountParam.getPassword();
@@ -143,19 +143,19 @@ public class OpenController {
 
     @PostMapping("/google")
     @ApiOperation(value = "Login or Join via Google", notes = "Google 계정으로 Login 체크 후 없으면 Join 후 Account 반환")
-    public Result google(@RequestBody AccountModel accountParam) {
+    public ApiResult google(@RequestBody AccountModel accountParam) {
         return this.authBySNS(accountParam, "google");
     }
 
     @PostMapping("/kakao")
     @ApiOperation(value = "Login or Join via Kakao", notes = "Kakao 계정으로 Login 체크 후 없으면 Join 후 Account 반환")
-    public Result kakao(@RequestBody AccountModel accountParam) {
+    public ApiResult kakao(@RequestBody AccountModel accountParam) {
         return this.authBySNS(accountParam, "kakao");
     }
 
     @PostMapping("/refresh-token")
-    public Result refreshToken(@RequestBody String refreshToken) {
-        Result result = new Result();
+    public ApiResult refreshToken(@RequestBody String refreshToken) {
+        ApiResult result = new ApiResult();
         try {
             ResultStatus checkRefreshToken = jwtTokenProvider.validateToken(refreshToken);
             if(!ResultStatus.success.equals(checkRefreshToken) ) {
@@ -191,8 +191,8 @@ public class OpenController {
     }
 
     @PostMapping("/find-account")
-    public Result findAccount(@RequestBody Map param) {
-        Result result = new Result();
+    public ApiResult findAccount(@RequestBody Map param) {
+        ApiResult result = new ApiResult();
 
         try {
             String phone = (String) param.get("phone");
@@ -235,8 +235,8 @@ public class OpenController {
     }
 
     @PostMapping("/temp-password")
-    public Result tempPassword(@RequestBody Map param)  {
-        Result result = new Result();
+    public ApiResult tempPassword(@RequestBody Map param)  {
+        ApiResult result = new ApiResult();
 
         try {
             String accountKey = (String) param.get("accountKey");
@@ -285,8 +285,8 @@ public class OpenController {
         return result;
     }
 
-    private Result authBySNS(AccountModel accountParam, String joinType) {
-        Result result = new Result();
+    private ApiResult authBySNS(AccountModel accountParam, String joinType) {
+        ApiResult result = new ApiResult();
         try {
             String snsKey = accountParam.getSnsKey();
             if(snsKey == null || snsKey.isEmpty() || joinType == null || joinType.isEmpty()) {
