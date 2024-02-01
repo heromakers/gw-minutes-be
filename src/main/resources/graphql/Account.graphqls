@@ -43,7 +43,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertAccount(accountParam: AccountParam!, password: String): Result
-    updateAccount(accountId: Int!, accountParam: AccountParam!): Result
-    deleteAccount(accountId: Int!): Result
+    insertAccount(accountParam: AccountParam!, password: String): ApiResult
+    updateAccount(accountId: Int!, accountParam: AccountParam!): ApiResult
+    deleteAccount(accountId: Int!): ApiResult
 }

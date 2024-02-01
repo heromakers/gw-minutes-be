@@ -12,7 +12,7 @@ enum ResultStatus {
     success , fail , expired , invalid , malformed , denied, error
 }
 
-type Result {
+type ApiResult {
     status : ResultStatus
     reason : String
     message : String

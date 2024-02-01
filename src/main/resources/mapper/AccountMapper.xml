@@ -5,6 +5,7 @@
         <result property="accountId" column="account_id" />
         <result property="joinType" column="join_type" />
         <result property="accountKey" column="account_key" />
+        <result property="snsKey" column="sns_key" />
         <result property="humanName" column="human_name" />
         <result property="phone" column="phone" />
         <result property="email" column="email" />
@@ -116,6 +117,7 @@
         account_key
         ,password
         ,join_type
+        ,sns_key
         ,human_name
         ,phone
         ,email
@@ -133,6 +135,7 @@
         #{accountKey}
         ,#{password}
         ,#{joinType}
+        ,#{snsKey}
         ,#{humanName}
         ,#{phone}
         ,#{email}
@@ -160,6 +163,9 @@
         </if>
         <if test="joinType != null and joinType != ''">
             ,join_type = #{joinType}
+        </if>
+        <if test="snsKey != null and snsKey != ''">
+            ,sns_key = #{snsKey}
         </if>
         <if test="humanName != null and humanName != ''">
             ,human_name = #{humanName}
@@ -207,17 +213,20 @@
     </update>
 
     <update id="updateFcmToken" parameterType="java.util.Map">
-        UPDATE tb_account SET fcm_token = #{fcmToken}
+        UPDATE tb_account SET
+        fcm_token = #{fcmToken}
         WHERE account_id = #{accountId}
     </update>
 
     <update id="updateLoginAt" parameterType="int">
-        UPDATE tb_account SET login_at = now()
+        UPDATE tb_account SET
+        login_at = now()
         WHERE account_id = #{accountId}
     </update>
 
     <update id="deleteFlag" parameterType="int">
-        UPDATE tb_account SET use_fg = 0
+        UPDATE tb_account SET
+        use_fg = 0
         WHERE account_id = #{accountId}
     </update>
 

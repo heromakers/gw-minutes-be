@@ -35,7 +35,7 @@ extend type Query {
 }
 
 extend type Mutation {
-    insertInfoPopup(infoPopupParam: InfoPopupParam!): Result
-    updateInfoPopup(seq: Int!, infoPopupParam: InfoPopupParam!): Result
-    deleteInfoPopup(seq: Int!): Result
+    insertInfoPopup(infoPopupParam: InfoPopupParam!): ApiResult
+    updateInfoPopup(seq: Int!, infoPopupParam: InfoPopupParam!): ApiResult
+    deleteInfoPopup(seq: Int!): ApiResult
 }
