@@ -68,6 +68,18 @@
         WHERE seq = #{seq}
     </select>
 
+    <select id="selectActiveOne" resultMap="InfoPopupMap">
+        SELECT inp.*
+            ,fle.file_url
+        FROM tb_info_popup inp
+        LEFT JOIN tb_file fle ON fle.link_info = 'infoPopupImage' and fle.link_key = inp.seq
+        WHERE inp.show_fg = 1
+        AND inp.status = 'Active'
+        AND ( DATE_FORMAT(now(), '%Y-%m-%d') BETWEEN inp.start_date AND inp.end_date )
+        ORDER BY inp.end_date
+        LIMIT 1
+    </select>
+
     <insert id="insert" parameterType="InfoPopupModel" useGeneratedKeys="true" keyProperty="seq">
         INSERT INTO tb_info_popup (
         code
