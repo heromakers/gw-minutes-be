@@ -38,7 +38,7 @@
 
     <select id="queryList" parameterType="java.util.Map" resultMap="NoticeMap">
         SELECT ntc.*
-            ,cod.code_label AS noticeKindTitle
+            ,IFNULL(cod.code_label, ntc.notice_kind) AS noticeKindTitle
             ,fle.file_url
         FROM tb_notice ntc
         LEFT JOIN tb_code cod ON cod.p_code = 'NOTICE_KIND' and cod.code = ntc.notice_kind
