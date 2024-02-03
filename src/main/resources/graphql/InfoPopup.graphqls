@@ -1,4 +1,4 @@
-type InfoPopupModel {
+type InfoPopupType {
     seq : ID!
     code : String
     kind : String
@@ -8,14 +8,14 @@ type InfoPopupModel {
     options : String
     startDate : String
     endDate : String
-    popupImage : FileModel
+    popupImage : FileType
     registerId : Int
     register : String
     showFlag : Boolean
     editedAt : String
 }
 
-input InfoPopupParam {
+input InfoPopupInput {
     code : String
     kind : String
     status : String
@@ -24,18 +24,18 @@ input InfoPopupParam {
     options : String
     startDate : String
     endDate : String
-    popupImage : FileParam
+    popupImage : FileInput
     registerId : Int
     register : String
 }
 
 extend type Query {
-    infoPopupList(isActive: String, schTxt: String, showFlag: Boolean, infoPopupParam: InfoPopupParam) : [InfoPopupModel]
-    infoPopupById(seq : Int!) : InfoPopupModel
+    infoPopupList(isActive: String, schTxt: String, showFlag: Boolean, infoPopupParam: InfoPopupInput) : [InfoPopupType]
+    infoPopupById(seq : Int!) : InfoPopupType
 }
 
 extend type Mutation {
-    insertInfoPopup(infoPopupParam: InfoPopupParam!): ApiResult
-    updateInfoPopup(seq: Int!, infoPopupParam: InfoPopupParam!): ApiResult
+    insertInfoPopup(infoPopupParam: InfoPopupInput!): ApiResult
+    updateInfoPopup(seq: Int!, infoPopupParam: InfoPopupInput!): ApiResult
     deleteInfoPopup(seq: Int!): ApiResult
 }

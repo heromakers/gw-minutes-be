@@ -1,4 +1,4 @@
-type NoticeModel {
+type NoticeType {
     noticeId : ID!
     title : String!
     noticeKind : String
@@ -7,28 +7,28 @@ type NoticeModel {
     writerName : String
     contents : String
     readCount : Int
-    mainImage : FileModel
+    mainImage : FileType
     useFlag : Boolean
     createdAt : String
     updatedAt : String
 }
 
-input NoticeParam {
+input NoticeInput {
     title : String
     noticeKind : String
     writerId : Int
     writerName : String
     contents : String
-    mainImage : FileParam
+    mainImage : FileInput
 }
 
 extend type Query {
-    noticeList(schTxt: String, useFlag: Boolean, noticeParam: NoticeParam) : [NoticeModel]
-    noticeById(noticeId : Int!) : NoticeModel
+    noticeList(schTxt: String, useFlag: Boolean, noticeParam: NoticeInput) : [NoticeType]
+    noticeById(noticeId : Int!) : NoticeType
 }
 
 extend type Mutation {
-    insertNotice(noticeParam: NoticeParam!): ApiResult
-    updateNotice(noticeId: Int!, noticeParam: NoticeParam!): ApiResult
+    insertNotice(noticeParam: NoticeInput!): ApiResult
+    updateNotice(noticeId: Int!, noticeParam: NoticeInput!): ApiResult
     deleteNotice(noticeId: Int!): ApiResult
 }

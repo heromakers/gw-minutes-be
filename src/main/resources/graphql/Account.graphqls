@@ -1,4 +1,4 @@
-type AccountModel {
+type AccountType {
     accountId : ID!
     accountKey : String
     joinType : String
@@ -13,12 +13,12 @@ type AccountModel {
     level : String
     fcmToken : String
     refreshToken : String
-    profileImage : FileModel
+    profileImage : FileType
     useFlag : Boolean
     createdAt : String
 }
 
-input AccountParam {
+input AccountInput {
     accountKey : String
     joinType : String
     snsKey : String
@@ -32,18 +32,18 @@ input AccountParam {
     level : String = "Normal"
     fcmToken : String
     refreshToken : String
-    profileImage : FileParam
+    profileImage : FileInput
 #    fileRealName : String
 #    base64String : String
 }
 
 extend type Query {
-    accountList(schTxt: String, useFlag: Boolean, accountParam: AccountParam) : [AccountModel]
-    accountById(accountId : Int!) : AccountModel
+    accountList(schTxt: String, useFlag: Boolean, accountParam: AccountInput) : [AccountType]
+    accountById(accountId : Int!) : AccountType
 }
 
 extend type Mutation {
-    insertAccount(accountParam: AccountParam!, password: String): ApiResult
-    updateAccount(accountId: Int!, accountParam: AccountParam!): ApiResult
+    insertAccount(accountParam: AccountInput!, password: String): ApiResult
+    updateAccount(accountId: Int!, accountParam: AccountInput!): ApiResult
     deleteAccount(accountId: Int!): ApiResult
 }
