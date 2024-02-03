@@ -1,16 +1,16 @@
-type CommentModel {
+type CommentType {
     commentId : ID!
     parentId : Int
     precedingId : Int
     writerId : Int
-    writer : AccountModel
+    writer : AccountType
     contents : String
     useFlag : Boolean
     createdAt : String
     updatedAt : String
 }
 
-input CommentParam {
+input CommentInput {
     parentId : Int
     precedingId : Int
     writerId : Int
@@ -18,12 +18,12 @@ input CommentParam {
 }
 
 extend type Query {
-    commentList(schTxt: String, useFlag: Boolean, commentParam: CommentParam) : [CommentModel]
-    commentById(commentId : Int!) : CommentModel
+    commentList(schTxt: String, useFlag: Boolean, commentParam: CommentInput) : [CommentType]
+    commentById(commentId : Int!) : CommentType
 }
 
 extend type Mutation {
-    insertComment(commentParam: CommentParam!): ApiResult
-    updateComment(commentId: Int!, commentParam: CommentParam!): ApiResult
+    insertComment(commentParam: CommentInput!): ApiResult
+    updateComment(commentId: Int!, commentParam: CommentInput!): ApiResult
     deleteComment(commentId: Int!): ApiResult
 }

@@ -1,4 +1,4 @@
-type CodeModel {
+type CodeType {
     codeId : ID!
     parentCode : String!
     code : String!
@@ -10,7 +10,7 @@ type CodeModel {
     editedAt : String
 }
 
-input CodeParam {
+input CodeInput {
     parentCode : String
     code : String
     codeLabel : String
@@ -20,12 +20,12 @@ input CodeParam {
 }
 
 extend type Query {
-    codeList(schTxt: String, useFlag: Boolean, codeParam: CodeParam) : [CodeModel]
-    codeById(codeId : Int!) : CodeModel
+    codeList(schTxt: String, useFlag: Boolean, codeParam: CodeInput) : [CodeType]
+    codeById(codeId : Int!) : CodeType
 }
 
 extend type Mutation {
-    insertCode(codeParam: CodeParam!): ApiResult
-    updateCode(codeId: Int!, codeParam: CodeParam!): ApiResult
+    insertCode(codeParam: CodeInput!): ApiResult
+    updateCode(codeId: Int!, codeParam: CodeInput!): ApiResult
     deleteCode(codeId: Int!): ApiResult
 }

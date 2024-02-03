@@ -1,33 +1,33 @@
-type TalkModel {
+type TalkType {
     talkId : ID!
     title : String!
     talkKind : String
     talkKindTitle : String
     writerId : Int
-    writer : AccountModel
+    writer : AccountType
     contents : String
     readCount : Int
-    mainImage : FileModel
+    mainImage : FileType
     useFlag : Boolean
     createdAt : String
     updatedAt : String
 }
 
-input TalkParam {
+input TalkInput {
     title : String
     talkKind : String
     writerId : Int
     contents : String
-    mainImage : FileParam
+    mainImage : FileInput
 }
 
 extend type Query {
-    talkList(schTxt: String, useFlag: Boolean, talkParam: TalkParam) : [TalkModel]
-    talkById(talkId : Int!) : TalkModel
+    talkList(schTxt: String, useFlag: Boolean, talkParam: TalkInput) : [TalkType]
+    talkById(talkId : Int!) : TalkType
 }
 
 extend type Mutation {
-    insertTalk(talkParam: TalkParam!): ApiResult
-    updateTalk(talkId: Int!, talkParam: TalkParam!): ApiResult
+    insertTalk(talkParam: TalkInput!): ApiResult
+    updateTalk(talkId: Int!, talkParam: TalkInput!): ApiResult
     deleteTalk(talkId: Int!): ApiResult
 }

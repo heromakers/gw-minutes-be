@@ -1,4 +1,4 @@
-type FileModel {
+type FileType {
     fileId : ID!
     linkInfo : String!
     linkKey : Int
@@ -8,7 +8,7 @@ type FileModel {
     savedAt : String
 }
 
-input FileParam {
+input FileInput {
     fileId : Int
     linkInfo : String
     linkKey : Int
@@ -19,11 +19,11 @@ input FileParam {
 }
 
 extend type Query {
-    fileList(fileParam: FileParam) : [FileModel]
-    fileById(fileId : Int!) : FileModel
+    fileList(fileParam: FileInput) : [FileType]
+    fileById(fileId : Int!) : FileType
 }
 
 extend type Mutation {
-    uploadFile(fileParam: FileParam!): ApiResult
+    uploadFile(fileParam: FileInput!): ApiResult
     deleteFile(fileId: Int!): ApiResult
 }
