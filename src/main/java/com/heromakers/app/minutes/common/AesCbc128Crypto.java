@@ -22,7 +22,7 @@ public class AesCbc128Crypto {
 	private static final byte[]  iv = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	private static IvParameterSpec ivSpec;
 
-	private AesCbc128Crypto() { // String keyValue) {
+	private AesCbc128Crypto() {
 		try {
 			ivSpec = new IvParameterSpec(iv);
 			secretKey = new SecretKeySpec(keyValue.getBytes(), "AES");
@@ -52,7 +52,7 @@ public class AesCbc128Crypto {
 
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
 
-        return Base64.encodeBase64String(cipher.doFinal(plainText.getBytes()));
+		return Base64.encodeBase64String(cipher.doFinal(plainText.getBytes()));
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class AesCbc128Crypto {
 
 		cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
-        return new String(cipher.doFinal(Base64.decodeBase64(cryptText)));
+		return new String(cipher.doFinal(Base64.decodeBase64(cryptText)));
 	}
 	
 	/**
@@ -83,7 +83,7 @@ public class AesCbc128Crypto {
 		SecretKeySpec secretKey = new SecretKeySpec(keyValue.getBytes(), "AES");
 		cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec);
 
-        return Base64.encodeBase64String(cipher.doFinal(plainText.getBytes()));
+		return Base64.encodeBase64String(cipher.doFinal(plainText.getBytes()));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class AesCbc128Crypto {
 		SecretKeySpec secretKey = new SecretKeySpec(keyValue.getBytes(), "AES");
 		cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
 
-        return new String(cipher.doFinal(Base64.decodeBase64(cryptText)));
+		return new String(cipher.doFinal(Base64.decodeBase64(cryptText)));
 	}
 
 	/**

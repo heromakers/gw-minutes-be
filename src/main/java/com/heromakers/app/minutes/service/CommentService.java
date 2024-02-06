@@ -18,13 +18,19 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     public List<CommentModel> getCommentList(Map param) {
         return commentMapper.queryList(param);
     }
 
     public CommentModel getCommentInfo(Integer commentId) {
         CommentModel commentModel = commentRepository.findById(commentId).orElse(null);
-        return commentModel;
+        if(commentModel == null) return null;
+
+        accountRepository.findById(commentModel.getWriterId()).ifPresent(commentModel::setWriter);
+        return commentRepository.findById(commentId).orElse(null);
     }
 
     public CommentModel insertComment(CommentModel commentParam) {

@@ -41,6 +41,11 @@ public class NoticeService {
     }
 
     public NoticeModel insertNotice(NoticeModel noticeParam) {
+        Integer writerId = noticeParam.getWriterId();
+        String writerName = noticeParam.getWriterName();
+        if((writerName == null || writerName.isEmpty()) && (writerId != null && writerId > 0)) {
+            accountRepository.findById(writerId).ifPresent(account -> noticeParam.setWriterName(account.getHumanName()));
+        }
         noticeParam.setCreatedAt(Instant.now());
         noticeParam.setUpdatedAt(Instant.now());
         NoticeModel saved = noticeRepository.save(noticeParam);

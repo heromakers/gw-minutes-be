@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NoticeMapper extends BaseMapper<NoticeModel, Integer> {
+    public int increaseReadCount(Integer noticeId);
 }

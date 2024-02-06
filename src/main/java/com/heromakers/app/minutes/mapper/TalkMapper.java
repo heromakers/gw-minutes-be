@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TalkMapper extends BaseMapper<TalkModel, Integer> {
+    public int increaseReadCount(Integer talkId);
 }

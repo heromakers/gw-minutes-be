@@ -18,10 +18,12 @@ public class SessionInterceptor implements HandlerInterceptor {
 
         if(roles == null) {
             response.sendRedirect("/admin/login");
+            return false;
         } else if(!roles.contains("ADMIN") && !roles.contains("MANAGER")) {
             System.out.println("roles: " + roles);
             session.invalidate();
             response.sendRedirect("/admin/login");
+            return false;
         }
 
         return true;

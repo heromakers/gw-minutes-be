@@ -33,7 +33,7 @@ public class LoggerInterceptor implements HandlerInterceptor {
             return true;
         }
         log.info("Request URI : " + requestURI );
-        Enumeration params = request.getParameterNames();
+        Enumeration<String> params = request.getParameterNames();
         while(params.hasMoreElements()) {
             String name = (String) params.nextElement();
             log.info("Parameter : " + name + " : " + request.getParameter(name));
